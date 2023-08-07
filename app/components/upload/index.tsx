@@ -88,7 +88,7 @@ const Upload = () => {
 
     return (<form
         id={styles.uploadform}
-        className="w-75 p-3 border bg-light rounded"
+        className="p-3 border bg-light rounded"
         action=""
     >
         <div className="d-flex flex-column">

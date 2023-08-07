@@ -1,5 +1,6 @@
 #uploadform {
     border: 3px dotted #ddd !important;
+    max-width: 450px;
 }
 .icon {
     width: 5rem;
