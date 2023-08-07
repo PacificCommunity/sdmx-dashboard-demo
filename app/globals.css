@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -24,4 +20,77 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+}
+
+#wrapper {
+  overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+  position: static;
+  min-height: 100vh;
+  margin-left: -15rem;
+  -webkit-transition: margin 0.25s ease-out;
+  -moz-transition: margin 0.25s ease-out;
+  -o-transition: margin 0.25s ease-out;
+  transition: margin 0.25s ease-out;
+}
+
+#sidebar-wrapper button {
+  position: absolute;
+  top: 1em;
+  left: 0;
+  border: 0 none;
+  background-color: transparent;
+  z-index: 999;
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+}
+
+#sidebar-wrapper .list-group {
+  width: 15rem;
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+}
+
+#sidebar-wrapper.sb-sidenav-toggled {
+  position: relative;
+  margin-left: 0;
+}
+#sidebar-wrapper.sb-sidenav-toggled button {
+  left: auto;
+  right: 10px;
+}
+
+@media (min-width: 768px) {
+  #sidebar-wrapper {
+    position: relative;
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+  #sidebar-wrapper button {
+    top: 1em;
+    left: auto;
+    right: 5px;
+    border: 0 none;
+    background-color: transparent;
+  }
+  #sidebar-wrapper.sb-sidenav-toggled {
+    position: static;
+    margin-left: -15rem;
+  }
+  #sidebar-wrapper.sb-sidenav-toggled button {
+    right: auto;
+    left: 0;
+    z-index: 999;
+  }
 }
