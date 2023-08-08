@@ -32,6 +32,13 @@ const Chart = ({config, loadedCallback}) => {
         });
     };
 
+    /**
+     * Process the "Title" expression provided in yaml.
+     * Example: 'Status in employment {$TIME_PERIOD}, [DIN, 14, Bold, Italics, LEFT]',
+     * @param {String} titleExpr
+     * @param {Object} dimensions
+     * @returns {Object}
+     */
     const processTitleExpr = (titleExpr: string, dimensions: any) => {
         const titleTextExpr = titleExpr.split(',')[0];
         const titleStylesExpr = titleExpr.split(',')[1];
@@ -58,6 +65,11 @@ const Chart = ({config, loadedCallback}) => {
         return titleObj;
     }
 
+    /**
+     * Extract Highcharts chart type from chart expression in yaml.
+     * @param chartExpr
+     * @returns {String}
+     */
     const processChartExpr = (chartExpr: string) => {
         const chartType = chartExpr.split(',')[0];
         switch (chartType) {
@@ -102,9 +114,12 @@ const Chart = ({config, loadedCallback}) => {
             let dataLabels = [];
             let xAxisValue = [];
             if(chartType == 'line') {
+                // for (multiple) line charts, we create multiple series for each legendConcept dimension values and using xAxisConcept as the x-axis dimension
+                // TODO in case any other dimension has multiple values, we fix them to their latest value and display a select field to change their value.
                 if(config.legendConcept != "") {
                     const serieDimensions = rawDimensions.find((dimension:any) => dimension.id == config.legendConcept);
                     if (xAxisConcept == "TIME_PERIOD") {
+                        // we assume that line charts have a time dimension represented on x-axis
                         const timeDimension = rawDimensions.find((dimension:any) => dimension.id == "TIME_PERIOD");
                         const freqDimension = rawDimensions.find((dimension:any) => dimension.id == "FREQ");
                         let unit = '';
@@ -129,6 +144,7 @@ const Chart = ({config, loadedCallback}) => {
                         }
                     }
                     serieDimensions.values.forEach((serieDimension:any) => {
+                        // a serie is created for each of the serie's dimension value
                         const serieData = data.filter((val:any) => val[config.legendConcept] == serieDimension.name);
                         const sortedData = sortByDimensionName(serieData, xAxisConcept);
                         const yAxisValue = sortedData.map((val: any) => {
@@ -146,6 +162,7 @@ const Chart = ({config, loadedCallback}) => {
                     });
                 }
             } else {
+                // other chart type (bar, pie) only one serie is created using the dimension specified in xAxisConcept
                 const sortedData = sortByDimensionName(data, xAxisConcept);
                 xAxisValue = sortedData.map((val: any) => {
                     return val[xAxisConcept];
