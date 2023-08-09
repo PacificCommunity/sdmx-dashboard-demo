@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Select, Spin } from 'antd';
-import Chart from '@/pages/component/chart';
+import Form from 'react-bootstrap/Form';
+import { Spinner } from 'react-bootstrap';
+import Chart from '@/app/components/chart';
 
 
 export default function Page({ params }: { params: { dashfile: string } }) {
@@ -14,7 +15,7 @@ export default function Page({ params }: { params: { dashfile: string } }) {
   const [chartConfig, setChartConfig] = useState({})
 
   const loadJsonFile = async (filename: string) => {
-    const res = await fetch(`/uploads/${filename}`)
+    const res = await fetch(`/api/config/${filename}`)
 
     if (!res.ok) {
         // This will activate the closest `error.js` Error Boundary
@@ -22,7 +23,7 @@ export default function Page({ params }: { params: { dashfile: string } }) {
     }
 
     return await res.json()
-}
+  }
 
   useEffect(() => {
     loadJsonFile(params.dashfile).then((data) => {
@@ -38,25 +39,21 @@ export default function Page({ params }: { params: { dashfile: string } }) {
 
   const renderVisual = () =>  {
 
-    const selectOptions = dashConfig.map((config, index) => ({
-      value: index,
-      label: config.Title.split(',')[0]
-    }));
-
-    const defaultChartIndex = 0;
-
     return (
       <div key={`container-${chartId}`} className="container-fluid">
         <div className="text-center my-3">
-          <Select
-              defaultValue={defaultChartIndex}
-              style={{ width: 420 }}
-              options={selectOptions}
-              onChange={(value: number) => {
-                setReady(false);
+          <Form.Select size='lg'
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                const value = parseInt(event.target.value);
                 setChartConfig(dashConfig[value]);
               }}
-            />
+          >
+            {
+              dashConfig.map((option, index) => (
+                <option key={`option-${index}`} value={index}>{option.Title.split(',')[0]}</option>
+              ))
+            }
+          </Form.Select>
         </div>
         <Chart
           config={chartConfig}
@@ -69,9 +66,17 @@ export default function Page({ params }: { params: { dashfile: string } }) {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="relative place-items-center ">
-        <Spin key={`loader`} spinning={!ready}>
-          {renderVisual()}
-        </Spin>
+        {
+          ready ? (
+            renderVisual()
+          ) : (
+            <div className='text-center align-middle my-3'>
+              <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            </div>
+          )
+        }
       </div>
     </main>
   )

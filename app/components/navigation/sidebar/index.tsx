@@ -12,7 +12,7 @@ const Sidebar = () => {
     const [sideList, setSideList] = useState([])
 
     const getJsonFiles = async () => {
-        const res = await fetch('/api/listfiles')
+        const res = await fetch('/api/config')
 
         if (!res.ok) {
             // This will activate the closest `error.js` Error Boundary
