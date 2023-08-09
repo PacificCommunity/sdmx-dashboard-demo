@@ -79,6 +79,7 @@ const Upload = () => {
       }
 
       console.log("File was uploaded successfylly:", data.url);
+      window.document.location.reload()
     } catch (error) {
       console.error(error);
       alert("Sorry! something went wrong.");
