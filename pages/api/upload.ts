@@ -26,14 +26,16 @@ const readFile = (
   options.maxFileSize = 1024 * 100; // 100 KB
   options.keepExtensions = true;
 
-  console.log("PROCESSING...");
-
   const form = formidable(options);
   return new Promise((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       if (err) {
         reject(err);
       }
+
+      const tmpfilepath = files.yamlfile[0].filepath;
+      const finalname = `${Date.now()}_${files.yamlfile[0].originalFilename}`;
+
       const validator = new YamlValidator({
         log: true,
         structure: false,
@@ -41,15 +43,9 @@ const readFile = (
         writeJson: true,
       });
 
-      // console.log('UPLOADED FILE', files)
-
-      const tmpfilepath = files.yamlfile[0].filepath;
-      const finalname = `${Date.now()}_${files.yamlfile[0].originalFilename}`;
-
-      // console.log("Validating YAML file", finalname);
       validator.validate([tmpfilepath]);
 
-      // Copy YML file (commented, as  this is not needed)
+      // Copy YML file (commented, as  this is not needed: we delete it instead)
       // fs.renameSync(tmpfilepath, `${pathDist}/${finalname}`)
 
       // delete YML file from tmp folder
