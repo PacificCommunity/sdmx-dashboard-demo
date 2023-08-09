@@ -60,7 +60,7 @@ const Upload = () => {
       let formData = new FormData();
       formData.append("yamlfile", file);
 
-      const res = await fetch("/api/upload", {
+      const res = await fetch("/api/config", {
         method: "POST",
         body: formData,
       });
@@ -112,6 +112,7 @@ const Upload = () => {
           className="d-none"
           name="file"
           type="file"
+          accept=".yml,.yaml"
           onChange={onFileUploadChange}
         />
       </label>
