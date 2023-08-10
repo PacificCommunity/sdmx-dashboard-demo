@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
+import { usePathname } from 'next/navigation';
 import Link from "next/link";
 import Spinner from 'react-bootstrap/Spinner';
 
@@ -10,6 +11,8 @@ const Sidebar = () => {
     const [sideToggle, setSideToggle] = useState(false)
     const [sideLoading, setSideLoading] = useState(true)
     const [sideList, setSideList] = useState([])
+
+    const currentRoute = usePathname()
 
     const getJsonFiles = async () => {
         const res = await fetch('/api/config')
@@ -35,10 +38,10 @@ const Sidebar = () => {
     }
 
     return (
-        <div className={`border-end bg-white ${sideToggle ? 'sb-sidenav-toggled' : ''}`} id="sidebar-wrapper">
+        <div className={`border-end text-light bg-dark ${sideToggle ? 'sb-sidenav-toggled' : ''}`} id="sidebar-wrapper">
             <button onClick={handleClick}></button>
-            <div className="sidebar-heading border-bottom bg-light">
-                Dashboards
+            <div className="sidebar-heading border-bottom border-secondary">
+                <Link href="/">Dashboards</Link>
             </div>
             <div className="list-group list-group-flush">
                 {
@@ -51,7 +54,12 @@ const Sidebar = () => {
                     ) : (sideList.length > 0 ?
                         (
                             sideList.map((item) => (
-                                <Link key={item.path} href={`/chart/${item.path}`} title={new Date(item.date * 1).toString()} className="list-group-item list-group-item-action list-group-item-light p-3">
+                                <Link
+                                    key={item.path}
+                                    href={`/chart/${item.path}`}
+                                    title={new Date(item.date * 1).toString()}
+                                    className={`list-group-item list-group-item-action p-3 ${currentRoute == '/chart/'+item.path?'active':''}`}
+                                >
                                     {item.name}
                                 </Link>
                             )
