@@ -51,7 +51,7 @@ const Sidebar = () => {
                     ) : (sideList.length > 0 ?
                         (
                             sideList.map((item) => (
-                                <Link key={item.path} href={`/chart/${item.path}`} className="list-group-item list-group-item-action list-group-item-light p-3">
+                                <Link key={item.path} href={`/chart/${item.path}`} title={new Date(item.date * 1).toString()} className="list-group-item list-group-item-action list-group-item-light p-3">
                                     {item.name}
                                 </Link>
                             )

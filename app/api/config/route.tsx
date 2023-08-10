@@ -16,18 +16,22 @@ export async function GET(request: NextRequest) {
 
         const filenames = fs.readdirSync(configFolderPath);
       
-        const jsonfiles = filenames
-            .filter(filename => filename.endsWith(".yaml") || filename.endsWith(".yml"))
+        const yamlfiles = filenames
+            // filter out non yaml files
+            .filter(filename => filename.endsWith(".yaml"))
+            // create object with human readable name and real file name
             .map((name) => {
-                // filter out non yaml files
                 return {
                     name: name
-                        .substring(0, name.lastIndexOf("."))
-                        .slice(name.indexOf("_") + 1),
+                        .split('.')[1]
+                        .replace('_', '.')
+                        .replace('-', ' '),
+                    date: name
+                        .split('.')[0],
                     path: name,
                 };
             });
-        return NextResponse.json(jsonfiles);
+        return NextResponse.json(yamlfiles);
     }
     catch (error) {
         console.error(error);
@@ -41,13 +45,11 @@ export async function POST(request: NextRequest) {
         const formData = await request.formData();
         const yamlfile = formData.get('yamlfile');
         if(yamlfile instanceof File && yamlfile.name ) {
-
-            const tmpfilepath = yamlfile.name;
-            const finalname = `${Date.now()}_${yamlfile.name}`;
             const bytes = await yamlfile.arrayBuffer();
             const buffer = Buffer.from(bytes);
             try {
                 const doc = yaml.load(buffer.toString());
+                const finalname = `${Date.now()}.${doc.DashID.replace('.','_').replace(' ','-')}.yaml`;
                 fs.writeFileSync(`${configFolderPath}/${finalname}`, buffer);
 
                 return NextResponse.json({success: true});
