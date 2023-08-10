@@ -5,7 +5,7 @@ import { Container, Navbar } from "react-bootstrap"
 
 const Mainbar = () => {
     return (
-        <Navbar bg="light">
+        <Navbar bg="secondary" data-bs-theme="dark">
             <Container className="justify-content-center">
                 <Navbar.Brand href="/">Dashboard Creator</Navbar.Brand>
             </Container>
