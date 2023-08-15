@@ -5,6 +5,7 @@ import ExportData from "highcharts/modules/export-data";
 import * as Highcharts from 'highcharts';
 import { useEffect, useState } from "react";
 import { SDMXParser } from 'sdmx-json-parser';
+import { parseTextExpr } from '@/app/utils/parseTextExpr';
 
 if (typeof Highcharts === 'object') {
     HighchartsExporting(Highcharts);
@@ -32,38 +33,7 @@ const Chart = ({config, loadedCallback}) => {
         });
     };
 
-    /**
-     * Process the "Title" expression provided in yaml.
-     * Example: 'Status in employment {$TIME_PERIOD}, [DIN, 14, Bold, Italics, LEFT]',
-     * @param {String} titleExpr
-     * @param {Object} dimensions
-     * @returns {Object}
-     */
-    const processTitleExpr = (titleExpr: string, dimensions: any) => {
-        const titleTextExpr = titleExpr.split(',')[0];
-        const titleStylesExpr = titleExpr.split(',')[1];
-        let titleObj:any = {};
-        if(titleStylesExpr) {
-            const titleStyles = titleExpr.split('[')[1].split(']')[0].split(',');
-            if(titleStyles.length != 5) {
-                throw new Error('Invalid title style expression for row');
-            }
-            titleObj['style'] = {
-                fontType: titleStyles[0],
-                fontSize: titleStyles[1],
-                fontWeight: titleStyles[2],
-                fontTransform: titleStyles[3],
-                fontLocation: titleStyles[4]
-            }
-        }
-        let titleText = titleTextExpr;
-        for (const match of titleTextExpr.matchAll(/\{\$([^{}]*)\}/g)) {
-            const dim = dimensions.find((dimension:any) => dimension.id == match[1]);
-            titleText = titleText.replace(match[0], dim.values[0].name);
-        }
-        titleObj['text'] = titleText;
-        return titleObj;
-    }
+    
 
     /**
      * Extract Highcharts chart type from chart expression in yaml.
@@ -109,7 +79,7 @@ const Chart = ({config, loadedCallback}) => {
                     rawDimension.values[0].name;
                 });
 
-            const titleObj = processTitleExpr(config.Title, rawDimensions);
+            const titleObj = parseTextExpr(config.Title, rawDimensions);
             let seriesData = [];
             let dataLabels = [];
             let xAxisValue = [];
