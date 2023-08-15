@@ -14,12 +14,12 @@ const configFolderPath = path.join(process.cwd(), "/public/uploads");
  */
 export async function GET(NextRequest, { params }) {
     try {
-        const yamlDoc = await yaml.load(fs.readFileSync(path.join(configFolderPath, params.name), "utf8"));
+        const yamlDoc = await yaml.load(fs.readFileSync(path.join(configFolderPath, `${params.name}.yaml`), "utf8"));
         return NextResponse.json(yamlDoc);
     }
     catch (error) {
         console.error(error);
-        return NextResponse.json({error: `Error loading file ${params.name}`}, {status: 500});
+        return NextResponse.json({error: `Error loading file ${params.name}.yaml`}, {status: 500});
     }
 
 }
