@@ -78,7 +78,7 @@ export default function Page({ params }: { params: { dashfile: string } }) {
   const renderVisual = () => {
 
     return (
-      <div key={`container-${dashId}`} className="container-fluid">
+      <div key={`container-${dashId}`} className="container-fluid mt-2">
         {
           dashConfig.map((row, index) => (
             <div key={`row-${index}`} className="row">
