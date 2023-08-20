@@ -13,26 +13,71 @@
  * @returns {Object}
  */
 export const parseTextExpr = (titleExpr: string, dimensions: any) => {
-  const titleTextExpr = titleExpr.split(",")[0];
-  const titleStylesExpr = titleExpr.split(",")[1];
-  let titleObj: any = {};
-  if (titleStylesExpr) {
-    const titleStyles = titleExpr.split("[")[1].split("]")[0].split(",");
-    if (titleStyles.length == 5) {
-      titleObj["style"] = {
-        fontType: titleStyles[0],
-        fontSize: titleStyles[1],
-        fontWeight: titleStyles[2],
-        fontTransform: titleStyles[3],
-        fontLocation: titleStyles[4],
-      }
+
+  // define return object
+  let result = {
+    text: '',         // cleaned up and parsed text
+    bootstrapcss: [], // bootstrap classname used in title component
+    inlinecss: {},    // inline css used in title component (font-size)
+    align: 'center',  // alignment for highcharts
+    hcStyle: {}       // highcharts style
+  }
+
+  if (!titleExpr || !titleExpr.trim()) {
+    return result;
+  }
+
+  // clean up title
+  const text = titleExpr.replace(/,[\s]?\[(.*?)\]$/, '').trim()
+  // replace {$VARIABLE} with actual value
+  // @todo it is not as simple as that
+  // see console.log(text, dimensions);
+  const textWithValues = text.replace(/\{\$(.*?)\}/g, (match, p1) => {
+    return dimensions[p1] || match;
+  });
+
+  result.text = textWithValues;  
+
+  // Get style options
+  // Match coma separated values in square brackets from a string
+  const match = titleExpr.match(/,[\s]?\[(.*?)\]$/);
+  const style = match ? match[0].replace(/\[|\]/g, '').split(',') : [];
+
+  // fill in result object
+  style.forEach((item) => {
+    switch (item.trim().toLowerCase()) {
+      case 'bold':
+        result.bootstrapcss.push('fw-bold');
+        result.hcStyle.fontWeight = 'bold';
+        break;
+      case 'italics':
+        result.bootstrapcss.push('fst-italic');
+        result.hcStyle.fontStyle = 'italic';
+        break;
+      case 'left':
+        result.bootstrapcss.push('text-start');
+        result.align = 'left';
+        break;
+      case 'center':
+        result.bootstrapcss.push('text-center');
+        result.align = 'center';
+        break;
+      case 'right':
+        result.bootstrapcss.push('text-end');
+        result.align = 'right';
+        break;
+      default:
+        // if number, then it is font size
+        if (parseInt(item)) {
+          result.inlinecss.fontSize = `${parseInt(item)}px`;
+          result.hcStyle.fontSize = `${parseInt(item)}px`;
+        } else {
+          // ignore other params
+        }
+        break;
     }
-  }
-  let titleText = titleTextExpr;
-  for (const match of titleTextExpr.matchAll(/\{\$([^{}]*)\}/g)) {
-    const dim = dimensions.find((dimension: any) => dimension.id == match[1]);
-    titleText = titleText.replace(match[0], dim.values[0].name);
-  }
-  titleObj["text"] = titleText;
-  return titleObj;
+  });
+
+  return result;
+
 }
