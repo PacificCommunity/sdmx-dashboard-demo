@@ -14,10 +14,10 @@ const Title = ({ config, loadedCallback }) => {
     }, [])
 
     return (
-        <>
-            <h2 className={`${titleObject.bootstrapcss && titleObject.bootstrapcss.join(' ')} pt-3`} style={titleObject.inlinecss}>{titleObject.text}</h2>
-            {subTitleObject['text'] && (<h4 className={`${subTitleObject.bootstrapcss && subTitleObject.bootstrapcss.join(' ')} pb-2`} style={subTitleObject.inlinecss}>{subTitleObject.text}</h4>)}
-        </>
+        <div className="pt-3 pb-2 px-2 px-xl-3 bg-white">
+            <h2 className={`${titleObject.bootstrapcss && titleObject.bootstrapcss.join(' ')}`} style={titleObject.inlinecss}>{titleObject.text}</h2>
+            {subTitleObject['text'] && (<h4 className={`${subTitleObject.bootstrapcss && subTitleObject.bootstrapcss.join(' ')}`} style={subTitleObject.inlinecss}>{subTitleObject.text}</h4>)}
+        </div>
     )
 }
 export default Title

@@ -20,10 +20,10 @@ export default function RootLayout({
   
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-light`}>
         <Offbar />
         <div id="page-content-wrapper">
-          <div className="container-fluid">{children}</div>
+          <div className="container-fluid mt-5 mt-sm-0">{children}</div>
         </div>
       </body>
     </html>

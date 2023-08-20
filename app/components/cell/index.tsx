@@ -40,7 +40,7 @@ const Cell = ({ config, loadedCallback }) => {
     }
 
     return (
-        <div className={`${config.className} bg-light border`}>
+        <div className={`${config.className} bg-light`}>
             {conditionalBoardComponent()}
         </div>
     )
