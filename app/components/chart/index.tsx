@@ -80,6 +80,7 @@ const Chart = ({config, loadedCallback}) => {
                 });
 
             const titleObj = parseTextExpr(config.Title, rawDimensions);
+            const subTitleObj = parseTextExpr(config.Subtitle, rawDimensions);
             let seriesData = [];
             let dataLabels = [];
             let xAxisValue = [];
@@ -186,6 +187,13 @@ const Chart = ({config, loadedCallback}) => {
                 },
                 title: {
                     text: titleObj.text,
+                    style: titleObj.hcStyle,
+                    align: titleObj.align
+                },
+                subtitle: {
+                    text: subTitleObj.text,
+                    style: subTitleObj.hcStyle,
+                    align: subTitleObj.align
                 },
                 legend: {
                     enabled: config.legendLoc == 'HIDE' ? false : true,
