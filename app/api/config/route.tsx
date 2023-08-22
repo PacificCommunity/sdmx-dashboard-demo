@@ -21,14 +21,13 @@ export async function GET(request: NextRequest) {
             .filter(filename => filename.endsWith(".yaml"))
             // create object with human readable name and real file name
             .map((name) => {
+                const stats = fs.statSync(`${configFolderPath}/${name}`)
                 return {
                     name: name
-                        .split('.')[1]
-                        .replace('_', '.')
+                        .split('.')[0]
                         .replace('-', ' '),
-                    date: name
-                        .split('.')[0],
-                    path: name,
+                    date: stats.mtime,
+                    uri: name.split('.')[0],
                 };
             });
         return NextResponse.json(yamlfiles);
@@ -49,7 +48,9 @@ export async function POST(request: NextRequest) {
             const buffer = Buffer.from(bytes);
             try {
                 const doc = yaml.load(buffer.toString());
-                const finalname = `${Date.now()}.${doc.DashID.replace('.','_').replace(' ','-')}.yaml`;
+                // DashID is any string composed of numbers, letters, and underscores (_) 
+                // should not have spaces, but just in case, replace them with dashes
+                const finalname = `${doc.DashID.replace(' ','-')}.yaml`;
                 fs.writeFileSync(`${configFolderPath}/${finalname}`, buffer);
 
                 return NextResponse.json({success: true});

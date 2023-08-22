@@ -3,7 +3,7 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 
 import Mainbar from "./components/navigation/mainbar";
-import Sidebar from "./components/navigation/sidebar";
+import Offbar from "./components/navigation/offbar";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,13 +20,10 @@ export default function RootLayout({
   
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <div className="d-flex" id="wrapper">
-          <Sidebar />
-          <div id="page-content-wrapper">
-            <Mainbar />
-            <div className="container-fluid">{children}</div>
-          </div>
+      <body className={`${inter.className} bg-light`}>
+        <Offbar />
+        <div id="page-content-wrapper">
+          <div className="container-fluid mt-5 mt-sm-0">{children}</div>
         </div>
       </body>
     </html>

@@ -55,17 +55,17 @@ const Sidebar = () => {
                         (
                             sideList.map((item) => (
                                 <Link
-                                    key={item.path}
-                                    href={`/chart/${item.path}`}
-                                    title={new Date(item.date * 1).toString()}
-                                    className={`list-group-item list-group-item-action p-3 ${currentRoute == '/chart/'+item.path?'active':''}`}
+                                    key={item.uri}
+                                    href={`/chart/${item.uri}`}
+                                    title={`Last updated on ${new Date(item.date).toString()}`}
+                                    className={`list-group-item list-group-item-action p-3 ${currentRoute == '/chart/'+item.uri?'active':''}`}
                                 >
                                     {item.name}
                                 </Link>
                             )
                             )
                         ) : (
-                            <div className="list-group-item text-center py-4 text-muted">No YAML file found</div>
+                            <div className="list-group-item text-center py-4 text-secondary">No YAML file found</div>
                         )
                     )
                 }
