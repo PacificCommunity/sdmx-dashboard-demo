@@ -29,12 +29,58 @@ export const parseTextExpr = (titleExpr: string, dimensions: any) => {
 
   // clean up title
   const text = titleExpr.replace(/,[\s]?\[(.*?)\]$/, '').trim()
-  // replace {$VARIABLE} with actual value
-  // @todo it is not as simple as that
-  // see console.log(text, dimensions);
-  const textWithValues = text.replace(/\{\$(.*?)\}/g, (match, p1) => {
-    return dimensions[p1] || match;
+  //const textWithValues = text.replace(/\{\$(.*?)\}/g, (match, p1) => {
+  const textWithValues = text.replace(/\{(.*?)\}/g, (match, p1) => {
+    let valueAttribute = 'name'
+    // replace {$VARIABLE} with actual value
+    if (p1.startsWith('$')) {
+      p1 = p1.substring(1);
+    } else {
+      // replace {VARIABLE} with id
+      valueAttribute = 'id'
+    }
+    const dimension = dimensions.find((item : any) => item.id === p1);
+    if (!dimension) {
+      console.warn(`Dimension with id ${p1} not found`);
+      return match;
+    } else {
+      if (dimension.values.length > 1) {
+        if (dimension.id === 'TIME_PERIOD') {
+          // if concept is TIME_PERIOD, we use the first and last value
+          const date1Str = dimension.values[0][valueAttribute];
+          const date2Str = dimension.values[dimension.values.length - 1][valueAttribute];
+          const date1 = new Date(date1Str);
+          const date2 = new Date(date2Str);
+          let date1Text = `${date1.getFullYear()}`;
+          let date2Text = `${date2.getFullYear()}`;
+          if (date1Str.split('-').length >= 2) {
+            // if year and month is provided
+            date1Text = `${date1.toLocaleString('default', { month: 'short' })} ${date1Text}`;
+            date2Text = `${date2.toLocaleString('default', { month: 'short' })} ${date2Text}`;
+          }
+          if (date1Str.split('-').length >= 3) {
+            // if year, month and day is provided
+            date1Text = `${date1.getDay()} ${date1Text}`;
+            date2Text = `${date2.getDay()} ${date2Text}`;
+          }
+          if (date1 < date2) {
+            // if date1 is before date2
+            return `${date1Text} - ${date2Text}`;
+          } else {
+            // if date2 is before date1
+            return `${date2Text} - ${date1Text}`;
+          }
+        } else {
+          // we return a comma separated list of values
+          return dimension.values.map((item : any) => item[valueAttribute]).join(', ');
+        }
+      } else {
+        // we return the value
+        return dimension.values[0][valueAttribute];
+      }
+    }
   });
+
 
   result.text = textWithValues;  
 

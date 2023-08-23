@@ -123,7 +123,7 @@ const Chart = ({config, loadedCallback}) => {
                             ...dimensionSingleValues,
                             ...val,
                             y: val["value"],
-                            x: Date.UTC(val[xAxisConcept].split('-')[0], (val[xAxisConcept].split('-').length > 1 ? val[xAxisConcept][1]: 1), (val[xAxisConcept].split('-').length > 2 ? val[xAxisConcept].split('-')[2]: 1)) 
+                            x: Date.UTC(val[xAxisConcept].split('-')[0], (val[xAxisConcept].split('-').length > 1 ? val[xAxisConcept].split('-')[1]: 1), (val[xAxisConcept].split('-').length > 2 ? val[xAxisConcept].split('-')[2]: 1))
                             };
                         });
                         seriesData.push({
