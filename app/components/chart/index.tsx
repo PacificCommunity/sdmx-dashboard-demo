@@ -5,7 +5,8 @@ import ExportData from "highcharts/modules/export-data";
 import * as Highcharts from 'highcharts';
 import { useEffect, useState } from "react";
 import { SDMXParser } from 'sdmx-json-parser';
-import { parseTextExpr } from '@/app/utils/parseTextExpr';
+import { parseOperandTextExpr, parseTextExpr } from '@/app/utils/parseTextExpr';
+import { parseDataExpr } from "@/app/utils/parseDataExpr";
 
 if (typeof Highcharts === 'object') {
     HighchartsExporting(Highcharts);
@@ -59,40 +60,59 @@ const Chart = ({config, loadedCallback}) => {
 
 
     useEffect(() => {
-        const url = config.DATA;
-        const xAxisConcept = config.xAxisConcept;
+        const dataObjs = parseDataExpr(config.DATA);
+
         const chartType = processChartExpr(config.chartType);
+        if (!chartType) {
+            throw new Error('Chart type not defined');
+        }
         const hcExtraOptions = {};
 
-        sdmxParser.getDatasets(url, {
+        let seriesData : any[] = [];
+        let dataLabels = [];
+        let xAxisValue = [];
+        let titleObj = {};
+        let subTitleObj = {};
+
+        const dataObj = dataObjs[0]; // TODO handle multiple data objects
+
+        const dataFlowUrl = dataObj.dataFlowUrl;
+        sdmxParser.getDatasets(dataFlowUrl, {
             headers: new Headers({
                 Accept: "application/vnd.sdmx.data+json;version=2.0.0",
             })
-        }).then((dataset: any) => {
+        }).then(() => {
             const data = sdmxParser.getData();
-            const rawDimensions = sdmxParser.getRawDimensions();
-            const dimensionSingleValues = {};
-            rawDimensions
-                .filter((rawDimension: any) => rawDimension.values.length === 1)
-                .forEach((rawDimension: any) => {
-                dimensionSingleValues[rawDimension.id] =
-                    rawDimension.values[0].name;
-                });
+            const dimensions = sdmxParser.getRawDimensions();
 
-            const titleObj = parseTextExpr(config.Title, rawDimensions);
-            const subTitleObj = parseTextExpr(config.Subtitle, rawDimensions);
-            let seriesData = [];
-            let dataLabels = [];
-            let xAxisValue = [];
+            titleObj = parseTextExpr(config.Title, dimensions);
+            subTitleObj = parseTextExpr(config.Subtitle, dimensions);
+
+            // check if xAxisConcept exists in data
+            if(config.xAxisConcept) {
+                const xAxisDimension = dimensions.find((dimension:any) => dimension.id == config.xAxisConcept);
+                if(!xAxisDimension) {
+                    throw new Error(`xAxisConcept ${config.xAxisConcept} not found in dataflow`);
+                }
+            }
+            // check if legendConcept exists in dataFlow
+            if(config.legendConcept) {
+                const legendDimension = dimensions.find((dimension:any) => dimension.id == config.legendConcept);
+                if(!legendDimension) {
+                    throw new Error(`legendConcept ${config.legendConcept} not found in dataflow`);
+                }
+            }
+
+            const xAxisConcept = config.xAxisConcept;
             if(chartType == 'line') {
                 // for (multiple) line charts, we create multiple series for each legendConcept dimension values and using xAxisConcept as the x-axis dimension
                 // TODO in case any other dimension has multiple values, we fix them to their latest value and display a select field to change their value.
                 if(config.legendConcept != "") {
-                    const serieDimensions = rawDimensions.find((dimension:any) => dimension.id == config.legendConcept);
+                    const serieDimensions = dimensions.find((dimension:any) => dimension.id == config.legendConcept);
                     if (xAxisConcept == "TIME_PERIOD") {
                         // we assume that line charts have a time dimension represented on x-axis
-                        const timeDimension = rawDimensions.find((dimension:any) => dimension.id == "TIME_PERIOD");
-                        const freqDimension = rawDimensions.find((dimension:any) => dimension.id == "FREQ");
+                        const timeDimension = dimensions.find((dimension:any) => dimension.id == "TIME_PERIOD");
+                        const freqDimension = dimensions.find((dimension:any) => dimension.id == "FREQ");
                         let unit = '';
                         let dateTimeLabelFormats = {
                             year: "%Y",
@@ -120,7 +140,7 @@ const Chart = ({config, loadedCallback}) => {
                         const sortedData = sortByDimensionName(serieData, xAxisConcept);
                         const yAxisValue = sortedData.map((val: any) => {
                             return {
-                            ...dimensionSingleValues,
+                            //...dimensionSingleValues,
                             ...val,
                             y: val["value"],
                             x: Date.UTC(val[xAxisConcept].split('-')[0], (val[xAxisConcept].split('-').length > 1 ? val[xAxisConcept].split('-')[1]: 1), (val[xAxisConcept].split('-').length > 2 ? val[xAxisConcept].split('-')[2]: 1))
@@ -143,9 +163,9 @@ const Chart = ({config, loadedCallback}) => {
                 }
                 const yAxisValue = sortedData.map((val: any) => {
                     return {
-                        ...dimensionSingleValues,
+                        //...dimensionSingleValues,
                         ...val,
-                        y: val["value"],
+                        y: val["value"], // TODO apply operation if provided
                         name: (xAxisConcept?val[xAxisConcept]:val[config.legendConcept]),
                     };
                 });
@@ -176,10 +196,6 @@ const Chart = ({config, loadedCallback}) => {
                     data: yAxisValue,
                 },];
             }
-            // const seriesData = [{
-            //     name: titleObj.text,
-            //     data: yAxisValue,
-            // },];
             loadedCallback(true);
             setHcOptions({
                 chart: {
