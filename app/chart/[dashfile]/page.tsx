@@ -81,7 +81,7 @@ export default function Page({ params }: { params: { dashfile: string } }) {
       <div key={`container-${dashId}`} className="container-fluid mt-2">
         {
           dashConfig.map((row, index) => (
-            <div key={`row-${index}`} className="row mb-3">
+            <div key={`row-${index}`} className="row mb-3 display-flex">
               {
                 row.map((element, index) => (
                   <Cell key={`col-${index}`} config={element} loadedCallback={(state: boolean) => setReady(state)} />

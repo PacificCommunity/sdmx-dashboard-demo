@@ -40,3 +40,12 @@ button.menu-button:hover {
 .offcanvas-body .list-group .list-group-item.active {
   background-color: rgba(255,255,255,.2);
 }
+
+.row.display-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+.row.display-flex > [class*='col-'] {
+  display: flex;
+  flex-direction: column;
+}

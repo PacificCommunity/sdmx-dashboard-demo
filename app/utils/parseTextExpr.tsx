@@ -1,3 +1,5 @@
+import { text } from "stream/consumers";
+
 /**
  * Process the "Title" expression provided in yaml.
  * Example: 'Status in employment {$TIME_PERIOD}, [DIN, 14, Bold, Italics, LEFT]',
@@ -125,5 +127,37 @@ export const parseTextExpr = (titleExpr: string, dimensions: any) => {
   });
 
   return result;
+
+}
+
+export const parseOperandTextExpr = (operandExpr: string, data : any, attributes: any[]) => {
+
+  const textWithValues = String(operandExpr).replace(/\{(.*?)\}/g, (match, p1) => {
+    let valueAttribute = 'name';
+    // replace {$VARIABLE} with actual value
+    if (p1.startsWith('$')) {
+      p1 = p1.substring(1);
+    } else {
+      // replace {VARIABLE} with id
+      valueAttribute = 'id'
+    }
+    const attribute = attributes.find((item : any) => item.id === p1);
+    if (!attribute) {
+      throw new Error(`Attribute with id ${p1} not found`);
+    } else {
+      const value = attribute.values.find((item : any) => item.name === data[attribute.id]);
+      if (value) {
+        if (attribute.id === 'UNIT_MULT') {
+          return Math.pow(10, parseInt(value[valueAttribute]));
+        }
+        return value[valueAttribute];
+      } else {
+        return '';
+      }
+    }
+
+  });
+
+  return textWithValues;
 
 }

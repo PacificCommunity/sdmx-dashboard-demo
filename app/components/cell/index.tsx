@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import Title from '@/app/components/title';
+import Value from '@/app/components/value';
 import Chart from '@/app/components/chart';
+import { ErrorBoundary } from 'react-error-boundary';
 
 /**
  * Return div/col with component corresponding to chart type
@@ -33,16 +35,37 @@ const Cell = ({ config, loadedCallback }) => {
                     config={config}
                     loadedCallback={loadedCallback}
                 />
+            case 'VALUE':
+                return <Value
+                    config={config}
+                    loadedCallback={loadedCallback}
+                />
             default:
                 return <p className="text-danger">[{config.chartType}]<br />{config.Title}</p>
         }
 
     }
 
+    const fallbackRender = ({ error, resetErrorBoundary }) => {
+        return (
+            <div className="text-danger">
+                <p>Something went wrong:</p>
+                <pre style={{ color: "red" }}>{error.message}</pre>
+            </div>
+        )
+    }
+
+
     return (
-        <div className={`${config.className} bg-light`}>
-            {conditionalBoardComponent()}
-        </div>
+        <ErrorBoundary
+            fallbackRender={fallbackRender}
+            onReset={() => {}}
+        >
+            <div className={`${config.className} bg-light`}>
+                {conditionalBoardComponent()}
+            </div>
+
+        </ErrorBoundary>
     )
 }
 
