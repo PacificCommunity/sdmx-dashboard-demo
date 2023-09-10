@@ -1,8 +1,21 @@
 # Dashboard generator
 
-## Getting Started
+This webapp displays dashboards according to configuration
+provided by YAML files uploaded by end users.
 
-First, run the development server:
+## Configuration
+
+By default YAML files are saved in local file system (in `pubic/uploads/` folder)
+
+To store YAML files as Github Gists, add 2 environment variables  
+(in .env.local for instance)
+
+```
+GIST_TOKEN=<your_github_token>
+GIST_PUBLIC=false
+```
+
+## Running the development server
 
 ```bash
 npm run dev
@@ -14,6 +27,3 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
