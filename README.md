@@ -5,7 +5,7 @@ provided by YAML files uploaded by end users.
 
 ## Configuration
 
-By default YAML files are saved in local file system (in `pubic/uploads/` folder)
+By default YAML files are saved in local file system (in `./public/uploads/` folder)
 
 To store YAML files as Github Gists, add 2 environment variables  
 (in .env.local for instance)
