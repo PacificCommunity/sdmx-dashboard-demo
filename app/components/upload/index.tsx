@@ -5,7 +5,7 @@ import { ChangeEvent, useState } from "react"
 
 import styles from './styles.module.css'
 
-const Upload = () => {
+export default function () {
 
   const [file, setFile] = useState<File | null>(null);
 
@@ -65,7 +65,7 @@ const Upload = () => {
         body: formData,
       });
 
-      console.log('API sent response');
+      // console.log('API sent response');
 
       const data = await res.json();
 
@@ -78,8 +78,10 @@ const Upload = () => {
         return;
       }
 
-      console.log("File was uploaded successfylly:", data.url);
-      window.document.location.reload()
+      console.log("File was uploaded successfully:", data.url);
+      
+      // Redirect to home page
+      window.location.href = '/';
     } catch (error) {
       console.error(error);
       alert("Sorry! something went wrong.");
@@ -137,4 +139,3 @@ const Upload = () => {
 
 
 }
-export default Upload
