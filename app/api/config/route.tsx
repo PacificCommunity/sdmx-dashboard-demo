@@ -3,8 +3,10 @@ import { NextResponse, NextRequest } from "next/server";
 import path from "path";
 import fs, { promises as fsp } from "fs";
 import yaml from "js-yaml";
-import { loadAllYamlFromGists } from "@/app/utils/loadYamlFromGists";
 import { saveYmlAsGist } from "@/app/utils/saveYmlAsGist";
+
+import { loadDashboards } from '@/app/utils/loadDashboards'
+import { revalidateTag } from "next/cache";
 
 const configFolderPath = path.join(process.cwd(), "/public/uploads");
 
@@ -14,47 +16,20 @@ const configFolderPath = path.join(process.cwd(), "/public/uploads");
  * @returns json 
  */
 export async function GET(request: NextRequest) {
-    if (process.env.GIST_TOKEN) {
-        // Option 1: Load from Github Gist
-        const data = await loadAllYamlFromGists();
-        if (data === false) {
-            return NextResponse.json({ error: 'Error loading files from Github' }, { status: 500 });
-        } else {
-            return NextResponse.json(data);
-        }
+
+    const data = await loadDashboards()
+
+    if (data === false) {
+        return NextResponse.json({ error: 'Error loading files from Github' }, { status: 500 });
     } else {
-        // Option 2: Load from locally uploaded files
-        try {
-
-            const filenames = fs.readdirSync(configFolderPath);
-
-            const yamlfiles = filenames
-                // filter out non yaml files
-                .filter(filename => filename.endsWith(".yaml"))
-                // create object with human readable name and real file name
-                .map((name) => {
-                    const stats = fs.statSync(`${configFolderPath}/${name}`)
-                    return {
-                        name: name
-                            .split('.')[0]
-                            .replace('-', ' '),
-                        date: stats.mtime,
-                        uri: name.split('.')[0],
-                    };
-                });
-            return NextResponse.json(yamlfiles);
-        }
-        catch (error) {
-            console.error(error);
-            return NextResponse.json({ error: 'Error loading folder' }, { status: 500 });
-        }
+        return NextResponse.json(data);
     }
-
+    
 }
 
 /**
- * 
- * @param NextRequest Post a new config to the uploads folder
+ * Save a new YAML file to uploads folder or Github Gist
+ * @param NextRequest Post a new config YAML file
  * @returns json 
  */
 export async function POST(request: NextRequest) {
@@ -91,7 +66,9 @@ export async function POST(request: NextRequest) {
                     const finalname = `${ymlobj.DashID.replace(' ', '-')}.yaml`;
                     fs.writeFileSync(`${configFolderPath}/${finalname}`, buffer);
                 }
-
+                // Revalidate cache on success
+                revalidateTag('gists')
+                // Return success message
                 return NextResponse.json({ success: true });
             } catch (e) {
                 throw new Error("Error saving YAML");
