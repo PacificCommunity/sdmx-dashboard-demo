@@ -19,6 +19,5 @@ export const saveYmlAsGist = async (dashID: string, ymlstring: string, notprivat
             'Authorization': `token ${process.env.GIST_TOKEN}`
         }
     });
-    console.log(gist)
     return gist
 }
