@@ -1,13 +1,44 @@
 import { NextPage } from 'next'
-import Upload from './components/upload'
 
-const Home: NextPage = () => {
+import Link from "next/link";
+import { SlashCircle, ClipboardData, PlusCircleDotted } from 'react-bootstrap-icons';
+
+import { loadDashboards } from '@/app/utils/loadDashboards'
+
+const Home: NextPage = async () => {
+
+  const data = await loadDashboards()
 
   return (
     <div className="p-1 p-md-3">
       <h1>Welcome</h1>
-      <p>Would you like to upload a new dashboard definition YAML file?</p>
-      <Upload />
+      <p>Generate SDMX dashboards from YAML definition files.</p>
+      <div className="list-group list-group-flush">
+        {
+          (data.length > 0 ?
+            (
+              data.map((item) => (
+                <Link
+                  key={item.uri}
+                  href={`/chart/${item.uri}`}
+                  title={`Last updated on ${new Date(item.date).toString()}`}
+                  className='list-group-item list-group-item-action p-3'
+                >
+                  <ClipboardData className="me-2" />{item.name}
+                </Link>
+              ))
+            ) : (
+              <div className="list-group-item text-center py-4 text-muted"><SlashCircle className="me-2" />No YAML file found</div>
+            )
+          )
+        }
+        <Link
+          href='/upload'
+          className='list-group-item list-group-item-action p-3'
+        >
+          <PlusCircleDotted className="me-2" />Upload new file
+        </Link>
+      </div>
     </div>
   )
 

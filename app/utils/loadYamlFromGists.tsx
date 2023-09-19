@@ -1,3 +1,5 @@
+import { revalidateTag } from "next/cache"
+
 /**
  * Load list of dashboard from Github Gist
  * @returns array of dashboards
@@ -33,6 +35,9 @@ export const loadAllYamlFromGists = async () => {
  * @returns raw text of dashboard.*.yaml
  */
 export const loadOneYamlFromGists = async (DashID: string) => {
+    // Revalidate cache (reload gists directly from Github)
+    revalidateTag('gists')
+    // Load all gists from authenticated user
     const gistjson = await loadUserGists()
     if (!gistjson.length) {
         return {} // nothing found
@@ -48,7 +53,8 @@ export const loadOneYamlFromGists = async (DashID: string) => {
         headers: {
             'Accept': 'text/plain',
             'Authorization': `token ${process.env.GIST_TOKEN}`
-        }
+        },
+        cache: 'no-store' // do not cache request
     })
     return response.text()
 }
@@ -66,6 +72,10 @@ const loadUserGists = async () => {
             method: 'GET',
             headers: {
                 'Authorization': `token ${process.env.GIST_TOKEN}`
+            },
+            next: {
+                tags: ['gists'],
+                revalidate: 120 // revalidate cache every 2 minutes
             }
         })
         return await gist.json()

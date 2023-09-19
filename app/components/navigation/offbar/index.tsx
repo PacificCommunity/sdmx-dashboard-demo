@@ -6,7 +6,7 @@ import Link from "next/link";
 import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-
+import { SlashCircle, ClipboardData, PlusCircleDotted } from 'react-bootstrap-icons';
 
 const Offbar = () => {
 
@@ -68,15 +68,21 @@ const Offbar = () => {
                                             onClick={handleClose}
                                             className={`list-group-item list-group-item-action p-3 ${currentRoute == '/chart/' + item.uri ? 'active' : ''}`}
                                         >
-                                            {item.name}
+                                            <ClipboardData className="me-2" />{item.name}
                                         </Link>
-                                    )
-                                    )
+                                    ))
                                 ) : (
-                                    <div className="list-group-item text-center py-4 text-muted">No YAML file found</div>
+                                    <div className="list-group-item text-center py-4 text-muted"><SlashCircle className="me-2" />No YAML file found</div>
                                 )
                             )
                         }
+                        <Link
+                            href='/upload'
+                            onClick={handleClose}
+                            className={`list-group-item list-group-item-action p-3 ${currentRoute == '/upload' ? 'active' : ''}`}
+                        >
+                            <PlusCircleDotted className="me-2" />Upload new file
+                        </Link>
                     </div>
                 </Offcanvas.Body>
             </Offcanvas>

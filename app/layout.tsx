@@ -2,7 +2,6 @@ import 'bootstrap/dist/css/bootstrap.css'
 import './globals.css'
 import { Inter } from 'next/font/google'
 
-import Mainbar from "./components/navigation/mainbar";
 import Offbar from "./components/navigation/offbar";
 
 const inter = Inter({ subsets: ['latin'] })
