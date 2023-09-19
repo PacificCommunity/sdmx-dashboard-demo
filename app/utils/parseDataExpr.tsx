@@ -27,6 +27,14 @@ export const parseDataExpr = (dataExprs: [string]) => {
       'dataFlowUrl': [],
     };
 
+    const tokens1 = dataExpr.split(', ');
+    if (tokens1.length == 2) {
+      const alternateLabel = tokens1[1].trim().replace(/[\{\}']+/g, '');
+      // TODO handle the case when alternateLabel is a concept
+      dataExpr = tokens1[0].trim();
+      parsedExpr['alternateLabel'] = alternateLabel;
+    }
+
     const tokens = dataExpr.split(' ');
     if (tokens.length == 1) {
       parsedExpr['dataFlowUrl'] = tokens[0].trim();

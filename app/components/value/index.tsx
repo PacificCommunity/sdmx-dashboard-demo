@@ -34,30 +34,64 @@ const Value = ({ config, loadedCallback }) => {
             setSubTitleObject(subTitleObj);
 
             let valueStr = data[0].value;
-            // apply operators to data
+            // apply operation to data
             if(dataObj.operator) {
-                // get operand value
-                // if operand starts with { then it is an attribute
                 if(dataObj.operand.startsWith('{')) {
+                    // if operand starts with { then it is an attribute
                     const operandValue = parseOperandTextExpr(dataObj.operand, data[0], attributes);
                     valueStr = eval(`${valueStr} ${dataObj.operator} ${operandValue}`);
+                    if (config['Decimals']) {
+                        const decimalNumber = parseOperandTextExpr(config['Decimals'], data[0], attributes);
+                        valueStr = valueStr.toFixed(decimalNumber);
+                    }
+                    if (config['Unit']) {
+                        if (config['unitLoc'] == 'SUFFIX') {
+                            valueStr += config['Unit'];
+                        } else if (config['unitLoc'] == 'PREFIX') {
+                            valueStr = config['Unit'] + valueStr;
+                        }
+                    }
+                    setValueStr(valueStr.toLocaleString());
+                } else {
+                    // we presume it is a dataflow url
+                    const parserOperand = new SDMXParser();
+                    parserOperand.getDatasets(dataObj.operand, {
+                        headers: new Headers({
+                            Accept: "application/vnd.sdmx.data+json;version=2.0.0",
+                        })
+                    }).then(() => {
+                        const dataOperand = parserOperand.getData();
+                        const dataOperandValue = dataOperand[0].value;
+                        valueStr = eval(`${valueStr} ${dataObj.operator} ${dataOperandValue}`);
+                        if (config['Decimals']) {
+                            const decimalNumber = parseOperandTextExpr(config['Decimals'], data[0], attributes);
+                            valueStr = valueStr.toFixed(decimalNumber);
+                        }
+                        if (config['Unit']) {
+                            if (config['unitLoc'] == 'SUFFIX') {
+                                valueStr += config['Unit'];
+                            } else if (config['unitLoc'] == 'PREFIX') {
+                                valueStr = config['Unit'] + valueStr;
+                            }
+                        }
+                        setValueStr(valueStr.toLocaleString());
+                    });
                 }
 
-            }
-            if (config['Decimals']) {
-                //const decimalNumber = parseInt(parseTextExpr(config['Decimals'], attributes)['text']); 
-                const decimalNumber = parseOperandTextExpr(config['Decimals'], data[0], attributes);
-                valueStr = valueStr.toFixed(decimalNumber);
-            }
-            if (config['Unit']) {
-                if (config['unitLoc'] == 'SUFFIX') {
-                    valueStr += config['Unit'];
-                } else if (config['unitLoc'] == 'PREFIX') {
-                    valueStr = config['Unit'] + valueStr;
+            } else {
+                if (config['Decimals']) {
+                    const decimalNumber = parseOperandTextExpr(config['Decimals'], data[0], attributes);
+                    valueStr = valueStr.toFixed(decimalNumber);
                 }
+                if (config['Unit']) {
+                    if (config['unitLoc'] == 'SUFFIX') {
+                        valueStr += config['Unit'];
+                    } else if (config['unitLoc'] == 'PREFIX') {
+                        valueStr = config['Unit'] + valueStr;
+                    }
+                }
+                setValueStr(valueStr.toLocaleString());
             }
-
-            setValueStr(valueStr.toLocaleString());
 
             loadedCallback(true)
         });
