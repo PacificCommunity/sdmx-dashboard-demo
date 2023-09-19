@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
                 // try to load YAML (checks if YAML is valid)
                 ymlobj = yaml.load(ymlstring);
             } catch (e) {
-                throw new Error("Not a valid YAML file");
+                throw new Error(`Not a valid YAML file: ${e}`);
             }
 
             // Save Dashboard YAML 
