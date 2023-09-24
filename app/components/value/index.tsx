@@ -98,10 +98,10 @@ const Value = ({ config, loadedCallback }) => {
     }, []);
 
     return (
-        <div className="pt-3 pb-2 px-2 px-xl-3 bg-white">
+        <div className="pt-3 pb-2 px-2 px-xl-3 bg-white h-100 display-flex">
             <h2 className={`${titleObject.bootstrapcss && titleObject.bootstrapcss.join(' ')}`} style={titleObject.inlinecss}>{titleObject.text}</h2>
             {subTitleObject['text'] && (<h4 className={`${subTitleObject.bootstrapcss && subTitleObject.bootstrapcss.join(' ')}`} style={subTitleObject.inlinecss}>{subTitleObject.text}</h4>)}
-            <span>{valueStr}</span>
+            <p className="text-center">{valueStr}</p>
         </div>
 
     )
