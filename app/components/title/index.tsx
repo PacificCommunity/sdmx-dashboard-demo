@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { parseTextExpr } from '@/app/utils/parseTextExpr';
 
-const Title = ({ config, loadedCallback }) => {
+const Title = ({ config, loadedCallback }: {config: any, loadedCallback : any}) => {
 
-    const [titleObject, setTitleObject] = useState({ text: "Loading..." })
-    const [subTitleObject, setSubTitleObject] = useState({ text: "Loading..." })
+    const [titleObject, setTitleObject] = useState<any>({ text: "Loading..." })
+    const [subTitleObject, setSubTitleObject] = useState<any>({ text: "Loading..." })
 
     useEffect(() => {
-        const titleObj = parseTextExpr(config.Title)
+        const titleObj = parseTextExpr(config.Title, [])
         setTitleObject(titleObj)
-        setSubTitleObject(parseTextExpr(config.Subtitle))
+        setSubTitleObject(parseTextExpr(config.Subtitle, []))
         loadedCallback(true)
     }, [])
 
