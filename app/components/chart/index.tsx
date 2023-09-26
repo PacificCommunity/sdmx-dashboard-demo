@@ -212,29 +212,29 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                         let serieDataDimensionValue= serieDimensionData[0];
                         if (xAxisConcept == "TIME_PERIOD") {
                             // we display the latest value in the bar and the whole time series in drilldown
-                            serieDimensionData.values.forEach((value: any) => {
-                                if(value["TIME_PERIOD"] > serieDataDimensionValue) {
+                            serieDimensionData.forEach((value: any) => {
+                                const valueDate = Date.UTC(value[xAxisConcept].split('-')[0], (value[xAxisConcept].split('-').length > 1 ? value[xAxisConcept].split('-')[1]: 1), (value[xAxisConcept].split('-').length > 2 ? value[xAxisConcept].split('-')[2]: 1))
+                                const serieDataDimensionValueDate = Date.UTC(serieDataDimensionValue[xAxisConcept].split('-')[0], (serieDataDimensionValue[xAxisConcept].split('-').length > 1 ? serieDataDimensionValue[xAxisConcept].split('-')[1]: 1), (serieDataDimensionValue[xAxisConcept].split('-').length > 2 ? serieDataDimensionValue[xAxisConcept].split('-')[2]: 1))
+                                if(value["TIME_PERIOD"] > serieDataDimensionValue["TIME_PERIOD"]) {
                                     serieDataDimensionValue = value;
                                 }
                             })
                         } else {
                             // we look for a "total" (_T) value to display in the bars
                             const totalDimensionValue = xDimension.values.find((value : any) => value.id == '_T')
-                            serieDimensionValue = serieDimensionData.find((value: any) => value[xAxisConcept] == totalDimensionValue.name)
-                            hcExtraOptions["xAxis"] = {
-                                type: 'category'
-                            }
+                            serieDataDimensionValue = serieDimensionData.find((value: any) => value[xAxisConcept] == totalDimensionValue.name)
                         }
                         xAxisValue.push(serieDimensionValue[legendConcept])
                         dataSerieData.push({
-                                ...serieDimensionValue,
-                                name: serieDimensionValue[legendConcept],
-                                drilldown: serieDimensionValue[legendConcept],
-                                y: serieDimensionValue["value"]
+                                ...serieDataDimensionValue,
+                                name: serieDataDimensionValue[legendConcept],
+                                drilldown: serieDataDimensionValue[legendConcept],
+                                y: serieDataDimensionValue["value"]
 
                         });
                         dataDrilldownData.push({
-                            id: serieDimensionValue[legendConcept],
+                            id: serieDataDimensionValue[legendConcept],
+                            type: (xAxisConcept == "TIME_PERIOD" ? 'line' : 'column'),
                             data: serieDimensionData.map(( value : any) => {
                                 if (xAxisConcept != "TIME_PERIOD") {
                                     // we remove the Total value from the drilled down data
@@ -254,11 +254,15 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                     if(seriesData.length == 0) {
                         seriesData = [{
                             name: serieDimensions["name"],
+                            colorByPoint: true,
                             data: dataSerieData
                         }]
                     }
                     hcExtraOptions["drilldown"] = {
                         series: dataDrilldownData
+                    }
+                    hcExtraOptions["xAxis"] = {
+                        type: 'category'
                     }
                     // hcExtraOptions["xAxis"] = {
                     //     categories: xAxisValue
