@@ -6,7 +6,7 @@ import * as Highcharts from 'highcharts';
 import { useEffect, useState } from "react";
 // @ts-ignore
 import { SDMXParser } from 'sdmx-json-parser';
-import { parseTextExpr } from '@/app/utils/parseTextExpr';
+import { parseTextExpr, parseOperandTextExpr } from '@/app/utils/parseTextExpr';
 import { parseDataExpr } from "@/app/utils/parseDataExpr";
 
 if (typeof Highcharts === 'object') {
@@ -88,7 +88,7 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                 const attributes = parser.getAttributes();
                 // if alternate label specified in the DATA field, the label is appended to the data with key xAxisConcept
                 if (dataObj.alternateLabel) {
-                    data.forEach((dataItem, index, data) => {
+                    data.forEach((dataItem: any, index: number, data: [any]) => {
                         data[index][config.xAxisConcept] = dataObj.alternateLabel;
                     });
                 }
@@ -97,7 +97,7 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                     if (dataObj.operand.startsWith('{')) {
                         // operand is an attribute
                         const operandValue = parseOperandTextExpr(dataObj.operand, data[0], attributes);
-                        data.forEach((dataItem, index, data) => {
+                        data.forEach((dataItem: any, index: number, data: [any]) => {
                             data[index].value = eval(`${data[index].value} ${dataObj.operator} ${operandValue}`);
                         });
                         return [data, parser.getRawDimensions()];
@@ -111,7 +111,7 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                         }).then(() => {
                             const dataOperand = parserOperand.getData();
                             const operandValue = dataOperand[0].value;
-                            data.forEach((dataItem, index, data) => {
+                            data.forEach((dataItem: any, index: number, data: [any]) => {
                                 data[index].value = eval(`${data[index].value} ${dataObj.operator} ${operandValue}`);
                             });
                             return [data, parser.getRawDimensions()];
@@ -123,7 +123,7 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
             })
         });
         Promise.all(dataPromises).then((sdmxObjs) => {
-            sdmxObjs.forEach((sdmxObj) => {
+            sdmxObjs.forEach((sdmxObj: any) => {
                 const data = sdmxObj[0];
                 const dimensions = sdmxObj[1];
 
@@ -217,18 +217,20 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                         };
                     });
 
-                if(config.LabelsYN) {
-                    hcExtraOptions["plotOptions"] = {
-                        [chartType]: {
-                            dataLabels: {
-                                enabled: true,
-                                formatter: function(this: any) {
-                                    debugger;
-                                    if(config.Unit == '%') {
-                                        if(chartType == "pie") {
-                                            return `${this.point?.name}: ${this.point?.percentage.toFixed(config.Decimals)} %`
+                    if(config.LabelsYN) {
+                        hcExtraOptions["plotOptions"] = {
+                            [chartType]: {
+                                dataLabels: {
+                                    enabled: true,
+                                    formatter: function(this: any) {
+                                        if(config.Unit == '%') {
+                                            if(chartType == "pie") {
+                                                return `${this.point?.name}: ${this.point?.percentage.toFixed(config.Decimals)} %`
+                                            } else {
+                                                return `${this.point?.percentage.toFixed(config.Decimals)} %`
+                                            }
                                         } else {
-                                            return `${this.point?.y?.toLocaleString()}`
+                                                return `${this.point?.y?.toLocaleString()}`
                                         }
                                     }
                                 }
