@@ -60,7 +60,7 @@ const Offbar = () => {
                                 </div>
                             ) : (sideList.length > 0 ?
                                 (
-                                    sideList.map((item) => (
+                                    sideList.map((item: any) => (
                                         <Link
                                             key={item.uri}
                                             href={`/chart/${item.uri}`}

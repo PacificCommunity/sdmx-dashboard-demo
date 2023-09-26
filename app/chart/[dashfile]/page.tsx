@@ -11,7 +11,7 @@ export default function Page({ params }: { params: { dashfile: string } }) {
   const [ready, setReady] = useState(false)
 
   const [dashId, setDashId] = useState('dashboard-1')
-  const [dashConfig, setDashConfig] = useState([])
+  const [dashConfig, setDashConfig] = useState<any[]>([])
   const [dashLayout, setDashLayout] = useState([])
   const [chartConfig, setChartConfig] = useState({})
 
@@ -83,7 +83,7 @@ export default function Page({ params }: { params: { dashfile: string } }) {
           dashConfig.map((row, index) => (
             <div key={`row-${index}`} className="row mb-3 display-flex">
               {
-                row.map((element, index) => (
+                row.map((element: any, index: string) => (
                   <Cell key={`col-${index}`} config={element} loadedCallback={(state: boolean) => setReady(state)} />
                 )
                 )

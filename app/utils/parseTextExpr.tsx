@@ -14,15 +14,27 @@ import { text } from "stream/consumers";
  * @param {Object} dimensions
  * @returns {Object}
  */
-export const parseTextExpr = (titleExpr: string, dimensions: any) => {
+export const parseTextExpr = (titleExpr: string, dimensions: any[]) => {
 
   // define return object
-  let result = {
-    text: '',         // cleaned up and parsed text
-    bootstrapcss: [], // bootstrap classname used in title component
-    inlinecss: {},    // inline css used in title component (font-size)
-    align: 'center',  // alignment for highcharts
-    hcStyle: {}       // highcharts style
+  let result : {
+    text: string,           // cleaned up and parsed text
+    bootstrapcss: string[], // bootstrap classname used in title component
+    inlinecss: {            // inline css used in title component (font-size)
+      fontSize?: string
+    },
+    align: string,          // alignment for highcharts
+    hcStyle: {              // highcharts style
+      fontWeight?: string,
+      fontSize?: string,
+      fontStyle?: string
+    }
+  } = {
+    text: '',
+    align: 'center',
+    bootstrapcss: [],
+    hcStyle: {},
+    inlinecss: {}
   }
 
   if (!titleExpr || !titleExpr.trim()) {
@@ -84,7 +96,7 @@ export const parseTextExpr = (titleExpr: string, dimensions: any) => {
   });
 
 
-  result.text = textWithValues;  
+  result.text = textWithValues;
 
   // Get style options
   // Match coma separated values in square brackets from a string
@@ -92,7 +104,7 @@ export const parseTextExpr = (titleExpr: string, dimensions: any) => {
   const style = match ? match[0].replace(/\[|\]/g, '').split(',') : [];
 
   // fill in result object
-  style.forEach((item) => {
+  style.forEach((item: any) => {
     switch (item.trim().toLowerCase()) {
       case 'bold':
         result.bootstrapcss.push('fw-bold');
