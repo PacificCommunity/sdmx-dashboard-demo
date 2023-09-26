@@ -2,6 +2,7 @@ import HighchartsReact from "highcharts-react-official";
 import HighchartsExporting from "highcharts/modules/exporting";
 import Accessibility from "highcharts/modules/accessibility";
 import ExportData from "highcharts/modules/export-data";
+import Drilldown from "highcharts/modules/drilldown"
 import * as Highcharts from 'highcharts';
 import { useEffect, useState } from "react";
 import { SDMXParser } from 'sdmx-json-parser';
@@ -12,6 +13,7 @@ if (typeof Highcharts === 'object') {
     HighchartsExporting(Highcharts);
     Accessibility(Highcharts);
     ExportData(Highcharts)
+    Drilldown(Highcharts)
 }
 
 const Chart = ({config, loadedCallback}) => {
@@ -198,7 +200,68 @@ const Chart = ({config, loadedCallback}) => {
                         });
                     });
                 } else if(chartType == 'drilldown') {
-                    // TODO
+                    const xAxisConcept = config.xAxisConcept;
+                    const legendConcept = config.legendConcept;
+                    const serieDimensions = dimensions.find((dimension:any) => dimension.id == legendConcept);
+                    const xDimension = dimensions.find((dimension: any) => dimension.id == xAxisConcept)
+                    let dataSerieData : any[] = []
+                    let dataDrilldownData : any[] = []
+                    serieDimensions.values.forEach((serieDimensionValue) => {
+                        const serieDimensionData = data.filter((val:any) => val[config.legendConcept] == serieDimensionValue.name);
+                        let serieDataDimensionValue= serieDimensionData[0];
+                        if (xAxisConcept == "TIME_PERIOD") {
+                            // we display the latest value in the bar and the whole time series in drilldown
+                            serieDimensionData.values.forEach((value) => {
+                                if(value["TIME_PERIOD"] > serieDataDimensionValue) {
+                                    serieDataDimensionValue = value;
+                                }
+                            })
+                        } else {
+                            // we look for a "total" (_T) value to display in the bars
+                            const totalDimensionValue = xDimension.values.find(value => value.id == '_T')
+                            serieDimensionValue = serieDimensionData.find(value => value[xAxisConcept] == totalDimensionValue.name)
+                            hcExtraOptions["xAxis"] = {
+                                type: 'category'
+                            }
+                        }
+                        xAxisValue.push(serieDimensionValue[legendConcept])
+                        dataSerieData.push({
+                                ...serieDimensionValue,
+                                name: serieDimensionValue[legendConcept],
+                                drilldown: serieDimensionValue[legendConcept],
+                                y: serieDimensionValue["value"]
+
+                        });
+                        dataDrilldownData.push({
+                            id: serieDimensionValue[legendConcept],
+                            data: serieDimensionData.map(value => {
+                                if (xAxisConcept != "TIME_PERIOD") {
+                                    // we remove the Total value from the drilled down data
+                                    const totalDimensionValue = xDimension.values.find(value => value.id == '_T')
+                                    if (value[xAxisConcept] == totalDimensionValue.name) {
+                                        return false
+                                    }
+                                }
+                                return {
+                                    ...value,
+                                    name: value[xAxisConcept],
+                                    y: value["value"]
+                                }
+                            })
+                        })
+                    })
+                    if(seriesData.length == 0) {
+                        seriesData = [{
+                            name: serieDimensions["name"],
+                            data: dataSerieData
+                        }]
+                    }
+                    hcExtraOptions["drilldown"] = {
+                        series: dataDrilldownData
+                    }
+                    // hcExtraOptions["xAxis"] = {
+                    //     categories: xAxisValue
+                    // }
                 } else {
                     // other chart type (bar, pie) only one serie is created using the dimension specified in xAxisConcept
                     const sortedData = sortByDimensionName(data, xAxisConcept);
@@ -251,7 +314,7 @@ const Chart = ({config, loadedCallback}) => {
             loadedCallback(true);
             setHcOptions({
                 chart: {
-                    type: chartType,
+                    type: chartType == 'drilldown' ? 'column' : chartType,
                 },
                 title: {
                     text: titleObj.text,
