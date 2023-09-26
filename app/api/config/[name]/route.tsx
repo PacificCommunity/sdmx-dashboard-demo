@@ -13,14 +13,14 @@ const configFolderPath = path.join(process.cwd(), "/public/uploads");
  * @param name name of the file to load
  * @returns json 
  */
-export async function GET(NextRequest, { params }) {
+export async function GET(request: NextRequest, { params }: {params: any}) {
     if (process.env.GIST_TOKEN) {
         // Get Gist
         const data = await loadOneYamlFromGists(params.name)
-        if (data === false) {
+        if (!data) {
             return NextResponse.json({ error: 'Error loading Gist from Github' }, { status: 500 })
         } else {
-            const yamlDoc = await yaml.load(data, "utf8")
+            const yamlDoc = await yaml.load(data!)
             return NextResponse.json(yamlDoc)
         }
     } else {

@@ -5,6 +5,7 @@ import ExportData from "highcharts/modules/export-data";
 import Drilldown from "highcharts/modules/drilldown"
 import * as Highcharts from 'highcharts';
 import { useEffect, useState } from "react";
+// @ts-ignore
 import { SDMXParser } from 'sdmx-json-parser';
 import { parseOperandTextExpr, parseTextExpr } from '@/app/utils/parseTextExpr';
 import { parseDataExpr } from "@/app/utils/parseDataExpr";
@@ -16,7 +17,7 @@ if (typeof Highcharts === 'object') {
     Drilldown(Highcharts)
 }
 
-const Chart = ({config, loadedCallback}) => {
+const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) => {
 
     const [ready, setReady] = useState(false)
     const [chartId, setChartId] = useState('chart-1')
@@ -25,7 +26,7 @@ const Chart = ({config, loadedCallback}) => {
     const sdmxParser = new SDMXParser();
 
     const sortByDimensionName = (data: any, dimension: string) => {
-        return data.sort((a, b) => {
+        return data.sort((a: any, b: any) => {
         if (a[dimension] < b[dimension]) {
             return -1;
         }
@@ -71,12 +72,12 @@ const Chart = ({config, loadedCallback}) => {
         if (!chartType) {
             throw new Error('Chart type not defined');
         }
-        const hcExtraOptions = {};
+        const hcExtraOptions : any = {};
 
         let seriesData : any[] = [];
         let xAxisValue = [];
-        let titleObj = {};
-        let subTitleObj = {};
+        let titleObj : any = {};
+        let subTitleObj :any = {};
 
         const dataPromises = dataObjs.map((dataObj) => {
             const parser = new SDMXParser();
@@ -89,7 +90,7 @@ const Chart = ({config, loadedCallback}) => {
                 const attributes = parser.getAttributes();
                 // if alternate label specified in the DATA field, the label is appended to the data with key xAxisConcept
                 if (dataObj.alternateLabel) {
-                    data.forEach((dataItem, index, data) => {
+                    data.forEach((dataItem: any, index: number, data: [any]) => {
                         data[index][config.xAxisConcept] = dataObj.alternateLabel;
                     });
                 }
@@ -98,7 +99,7 @@ const Chart = ({config, loadedCallback}) => {
                     if (dataObj.operand.startsWith('{')) {
                         // operand is an attribute
                         const operandValue = parseOperandTextExpr(dataObj.operand, data[0], attributes);
-                        data.forEach((dataItem, index, data) => {
+                        data.forEach((dataItem: any, index: number, data: [any]) => {
                             data[index].value = eval(`${data[index].value} ${dataObj.operator} ${operandValue}`);
                         });
                         return [data, parser.getRawDimensions()];
@@ -112,7 +113,7 @@ const Chart = ({config, loadedCallback}) => {
                         }).then(() => {
                             const dataOperand = parserOperand.getData();
                             const operandValue = dataOperand[0].value;
-                            data.forEach((dataItem, index, data) => {
+                            data.forEach((dataItem: any, index: number, data: [any]) => {
                                 data[index].value = eval(`${data[index].value} ${dataObj.operator} ${operandValue}`);
                             });
                             return [data, parser.getRawDimensions()];
@@ -124,7 +125,7 @@ const Chart = ({config, loadedCallback}) => {
             })
         });
         Promise.all(dataPromises).then((sdmxObjs) => {
-            sdmxObjs.forEach((sdmxObj) => {
+            sdmxObjs.forEach((sdmxObj: any) => {
                 const data = sdmxObj[0];
                 const dimensions = sdmxObj[1];
 
@@ -206,20 +207,20 @@ const Chart = ({config, loadedCallback}) => {
                     const xDimension = dimensions.find((dimension: any) => dimension.id == xAxisConcept)
                     let dataSerieData : any[] = []
                     let dataDrilldownData : any[] = []
-                    serieDimensions.values.forEach((serieDimensionValue) => {
+                    serieDimensions.values.forEach((serieDimensionValue: any) => {
                         const serieDimensionData = data.filter((val:any) => val[config.legendConcept] == serieDimensionValue.name);
                         let serieDataDimensionValue= serieDimensionData[0];
                         if (xAxisConcept == "TIME_PERIOD") {
                             // we display the latest value in the bar and the whole time series in drilldown
-                            serieDimensionData.values.forEach((value) => {
+                            serieDimensionData.values.forEach((value: any) => {
                                 if(value["TIME_PERIOD"] > serieDataDimensionValue) {
                                     serieDataDimensionValue = value;
                                 }
                             })
                         } else {
                             // we look for a "total" (_T) value to display in the bars
-                            const totalDimensionValue = xDimension.values.find(value => value.id == '_T')
-                            serieDimensionValue = serieDimensionData.find(value => value[xAxisConcept] == totalDimensionValue.name)
+                            const totalDimensionValue = xDimension.values.find((value : any) => value.id == '_T')
+                            serieDimensionValue = serieDimensionData.find((value: any) => value[xAxisConcept] == totalDimensionValue.name)
                             hcExtraOptions["xAxis"] = {
                                 type: 'category'
                             }
@@ -234,10 +235,10 @@ const Chart = ({config, loadedCallback}) => {
                         });
                         dataDrilldownData.push({
                             id: serieDimensionValue[legendConcept],
-                            data: serieDimensionData.map(value => {
+                            data: serieDimensionData.map(( value : any) => {
                                 if (xAxisConcept != "TIME_PERIOD") {
                                     // we remove the Total value from the drilled down data
-                                    const totalDimensionValue = xDimension.values.find(value => value.id == '_T')
+                                    const totalDimensionValue = xDimension.values.find(( value : any) => value.id == '_T')
                                     if (value[xAxisConcept] == totalDimensionValue.name) {
                                         return false
                                     }
@@ -284,7 +285,7 @@ const Chart = ({config, loadedCallback}) => {
                             [chartType]: {
                                 dataLabels: {
                                     enabled: true,
-                                    formatter: function() {
+                                    formatter: function(this: any) {
                                         if(config.Unit == '%') {
                                             if(chartType == "pie") {
                                                 return `${this.point?.name}: ${this.point?.percentage.toFixed(config.Decimals)} %`

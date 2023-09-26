@@ -17,7 +17,7 @@ const Home: NextPage = async () => {
         {
           (data.length > 0 ?
             (
-              data.map((item) => (
+              data.map((item: any) => (
                 <Link
                   key={item.uri}
                   href={`/chart/${item.uri}`}

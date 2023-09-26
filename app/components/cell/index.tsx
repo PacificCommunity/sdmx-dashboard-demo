@@ -15,7 +15,7 @@ import { ErrorBoundary } from 'react-error-boundary';
  * @param loadedCallback set to true when ready
  * @returns 
  */
-const Cell = ({ config, loadedCallback }) => {
+const Cell = ({ config, loadedCallback }: {config: any, loadedCallback: any}) => {
 
     const [ready, setReady] = useState(false)
 
@@ -47,7 +47,7 @@ const Cell = ({ config, loadedCallback }) => {
 
     }
 
-    const fallbackRender = ({ error, resetErrorBoundary }) => {
+    const fallbackRender = ({ error, resetErrorBoundary }: {error: any, resetErrorBoundary: any}) => {
         return (
             <div className="text-danger">
                 <p>Something went wrong:</p>
