@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { parseOperandTextExpr, parseTextExpr } from '@/app/utils/parseTextExpr';
+// @ts-ignore
 import { SDMXParser } from 'sdmx-json-parser';
 import { parseDataExpr } from "@/app/utils/parseDataExpr";
 
-const Value = ({ config, loadedCallback }) => {
+const Value = ({ config, loadedCallback }: {config: any, loadedCallback: any}) => {
 
-    const [titleObject, setTitleObject] = useState({ text: "Loading..." })
-    const [subTitleObject, setSubTitleObject] = useState({ text: "Loading..." })
+    const [titleObject, setTitleObject] = useState<any>({ text: "Loading..." })
+    const [subTitleObject, setSubTitleObject] = useState<any>({ text: "Loading..." })
     const [valueStr, setValueStr] = useState("Loading...")
 
     const sdmxParser = new SDMXParser();

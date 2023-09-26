@@ -36,8 +36,8 @@ export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
         const yamlfile = formData.get('yamlfile');
-        let ymlobj = {};
-        let ymlstring = '';
+        let ymlobj: any = {};
+        let ymlstring: string = '';
         if (yamlfile instanceof File && yamlfile.name) {
             const bytes = await yamlfile.arrayBuffer();
             const buffer = Buffer.from(bytes);

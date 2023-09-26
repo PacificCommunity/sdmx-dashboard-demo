@@ -5,7 +5,7 @@ import { ChangeEvent, useState } from "react"
 
 import styles from './styles.module.css'
 
-export default function () {
+const UploadComponent = () => {
 
   const [file, setFile] = useState<File | null>(null);
 
@@ -139,3 +139,5 @@ export default function () {
 
 
 }
+
+export default UploadComponent;

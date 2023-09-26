@@ -4,8 +4,9 @@ import Accessibility from "highcharts/modules/accessibility";
 import ExportData from "highcharts/modules/export-data";
 import * as Highcharts from 'highcharts';
 import { useEffect, useState } from "react";
+// @ts-ignore
 import { SDMXParser } from 'sdmx-json-parser';
-import { parseOperandTextExpr, parseTextExpr } from '@/app/utils/parseTextExpr';
+import { parseTextExpr } from '@/app/utils/parseTextExpr';
 import { parseDataExpr } from "@/app/utils/parseDataExpr";
 
 if (typeof Highcharts === 'object') {
@@ -14,7 +15,7 @@ if (typeof Highcharts === 'object') {
     ExportData(Highcharts)
 }
 
-const Chart = ({config, loadedCallback}) => {
+const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) => {
 
     const [ready, setReady] = useState(false)
     const [chartId, setChartId] = useState('chart-1')
@@ -23,7 +24,7 @@ const Chart = ({config, loadedCallback}) => {
     const sdmxParser = new SDMXParser();
 
     const sortByDimensionName = (data: any, dimension: string) => {
-        return data.sort((a, b) => {
+        return data.sort((a: any, b: any) => {
         if (a[dimension] < b[dimension]) {
             return -1;
         }
@@ -66,13 +67,13 @@ const Chart = ({config, loadedCallback}) => {
         if (!chartType) {
             throw new Error('Chart type not defined');
         }
-        const hcExtraOptions = {};
+        const hcExtraOptions : any = {};
 
         let seriesData : any[] = [];
         let dataLabels = [];
         let xAxisValue = [];
-        let titleObj = {};
-        let subTitleObj = {};
+        let titleObj : any = {};
+        let subTitleObj :any = {};
 
         const dataObj = dataObjs[0]; // TODO handle multiple data objects
 
@@ -175,7 +176,8 @@ const Chart = ({config, loadedCallback}) => {
                         [chartType]: {
                             dataLabels: {
                                 enabled: true,
-                                formatter: function() {
+                                formatter: function(this: any) {
+                                    debugger;
                                     if(config.Unit == '%') {
                                         if(chartType == "pie") {
                                             return `${this.point?.name}: ${this.point?.percentage.toFixed(config.Decimals)} %`
