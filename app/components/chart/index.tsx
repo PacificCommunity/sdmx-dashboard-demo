@@ -7,7 +7,7 @@ import * as Highcharts from 'highcharts';
 import { useEffect, useState } from "react";
 // @ts-ignore
 import { SDMXParser } from 'sdmx-json-parser';
-import { parseOperandTextExpr, parseTextExpr } from '@/app/utils/parseTextExpr';
+import { parseTextExpr, parseOperandTextExpr } from '@/app/utils/parseTextExpr';
 import { parseDataExpr } from "@/app/utils/parseDataExpr";
 
 if (typeof Highcharts === 'object') {
@@ -264,9 +264,6 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                     hcExtraOptions["xAxis"] = {
                         type: 'category'
                     }
-                    // hcExtraOptions["xAxis"] = {
-                    //     categories: xAxisValue
-                    // }
                 } else {
                     // other chart type (bar, pie) only one serie is created using the dimension specified in xAxisConcept
                     const sortedData = sortByDimensionName(data, xAxisConcept);
