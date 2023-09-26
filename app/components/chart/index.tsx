@@ -6,7 +6,7 @@ import * as Highcharts from 'highcharts';
 import { useEffect, useState } from "react";
 // @ts-ignore
 import { SDMXParser } from 'sdmx-json-parser';
-import { parseTextExpr } from '@/app/utils/parseTextExpr';
+import { parseTextExpr, parseOperandTextExpr } from '@/app/utils/parseTextExpr';
 import { parseDataExpr } from "@/app/utils/parseDataExpr";
 
 if (typeof Highcharts === 'object') {
@@ -54,6 +54,9 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
             case 'PIE':
                 return 'pie'
                 break;
+            case 'DRILLDOWN':
+                return 'drilldown'
+                break;
             default:
                 break;
         }
@@ -70,46 +73,89 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
         const hcExtraOptions : any = {};
 
         let seriesData : any[] = [];
-        let dataLabels = [];
         let xAxisValue = [];
         let titleObj : any = {};
         let subTitleObj :any = {};
 
-        const dataObj = dataObjs[0]; // TODO handle multiple data objects
-
-        const dataFlowUrl = dataObj.dataFlowUrl;
-        sdmxParser.getDatasets(dataFlowUrl, {
-            headers: new Headers({
-                Accept: "application/vnd.sdmx.data+json;version=2.0.0",
+        const dataPromises = dataObjs.map((dataObj) => {
+            const parser = new SDMXParser();
+            return parser.getDatasets(dataObj.dataFlowUrl, {
+                headers: new Headers({
+                    Accept: "application/vnd.sdmx.data+json;version=2.0.0",
+                })
+            }).then(() => {
+                let data = parser.getData();
+                const attributes = parser.getAttributes();
+                // if alternate label specified in the DATA field, the label is appended to the data with key xAxisConcept
+                if (dataObj.alternateLabel) {
+                    data.forEach((dataItem: any, index: number, data: [any]) => {
+                        data[index][config.xAxisConcept] = dataObj.alternateLabel;
+                    });
+                }
+                // if operation specified in the DATA field, it is applied here whether the operand is an attribute or another SDMX request
+                if (dataObj.operator) {
+                    if (dataObj.operand.startsWith('{')) {
+                        // operand is an attribute
+                        const operandValue = parseOperandTextExpr(dataObj.operand, data[0], attributes);
+                        data.forEach((dataItem: any, index: number, data: [any]) => {
+                            data[index].value = eval(`${data[index].value} ${dataObj.operator} ${operandValue}`);
+                        });
+                        return [data, parser.getRawDimensions()];
+                    } else {
+                        // operand is another SDMX request
+                        const parserOperand = new SDMXParser();
+                        return parserOperand.getDatasets(dataObj.operand, {
+                            headers: new Headers({
+                                Accept: "application/vnd.sdmx.data+json;version=2.0.0",
+                            })
+                        }).then(() => {
+                            const dataOperand = parserOperand.getData();
+                            const operandValue = dataOperand[0].value;
+                            data.forEach((dataItem: any, index: number, data: [any]) => {
+                                data[index].value = eval(`${data[index].value} ${dataObj.operator} ${operandValue}`);
+                            });
+                            return [data, parser.getRawDimensions()];
+                        });
+                    }
+                } else {
+                    return [data, parser.getRawDimensions()];
+                }
             })
-        }).then(() => {
-            const data = sdmxParser.getData();
-            const dimensions = sdmxParser.getRawDimensions();
+        });
+        Promise.all(dataPromises).then((sdmxObjs) => {
+            sdmxObjs.forEach((sdmxObj: any) => {
+                const data = sdmxObj[0];
+                const dimensions = sdmxObj[1];
 
-            titleObj = parseTextExpr(config.Title, dimensions);
-            subTitleObj = parseTextExpr(config.Subtitle, dimensions);
+                titleObj = parseTextExpr(config.Title, dimensions);
+                subTitleObj = parseTextExpr(config.Subtitle, dimensions);
 
-            // check if xAxisConcept exists in data
-            if(config.xAxisConcept) {
-                const xAxisDimension = dimensions.find((dimension:any) => dimension.id == config.xAxisConcept);
-                if(!xAxisDimension) {
-                    throw new Error(`xAxisConcept ${config.xAxisConcept} not found in dataflow`);
+                // check if xAxisConcept exists in data
+                if(config.xAxisConcept && config.xAxisConcept != 'MULTI') {
+                    const xAxisDimension = dimensions.find((dimension:any) => dimension.id == config.xAxisConcept);
+                    if(!xAxisDimension) {
+                        throw new Error(`xAxisConcept ${config.xAxisConcept} not found in dataflow`);
+                    }
                 }
-            }
-            // check if legendConcept exists in dataFlow
-            if(config.legendConcept) {
-                const legendDimension = dimensions.find((dimension:any) => dimension.id == config.legendConcept);
-                if(!legendDimension) {
-                    throw new Error(`legendConcept ${config.legendConcept} not found in dataflow`);
+                // check if legendConcept exists in dataFlow
+                if(config.legendConcept && config.legendConcept != 'MULTI') {
+                    const legendDimension = dimensions.find((dimension:any) => dimension.id == config.legendConcept);
+                    if(!legendDimension) {
+                        throw new Error(`legendConcept ${config.legendConcept} not found in dataflow`);
+                    }
                 }
-            }
 
-            const xAxisConcept = config.xAxisConcept;
-            if(chartType == 'line') {
-                // for (multiple) line charts, we create multiple series for each legendConcept dimension values and using xAxisConcept as the x-axis dimension
-                // TODO in case any other dimension has multiple values, we fix them to their latest value and display a select field to change their value.
-                if(config.legendConcept != "") {
-                    const serieDimensions = dimensions.find((dimension:any) => dimension.id == config.legendConcept);
+                let xAxisConcept = config.xAxisConcept;
+                let legendConcept = config.legendConcept;
+
+                if(chartType == 'line') {
+                    // in case xAxisConcept is empty, we use TIME_PERIOD
+                    xAxisConcept = config.xAxisConcept || 'TIME_PERIOD';
+                    // in case legendConcept is empty, we use the first dimension which is not TIME_PERIOD
+                    legendConcept = config.legendConcept || dimensions.find((dimension:any) => dimension.id != 'TIME_PERIOD')['id']
+                    // for (multiple) line charts, we create multiple series for each legendConcept dimension values and using xAxisConcept as the x-axis dimension
+                    // TODO in case any other dimension has multiple values, we fix them to their latest value and display a select field to change their value.
+                    let serieDimensions = dimensions.find((dimension:any) => dimension.id == legendConcept);
                     if (xAxisConcept == "TIME_PERIOD") {
                         // we assume that line charts have a time dimension represented on x-axis
                         const timeDimension = dimensions.find((dimension:any) => dimension.id == "TIME_PERIOD");
@@ -152,52 +198,57 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                             data: yAxisValue
                         });
                     });
-                }
-            } else {
-                // other chart type (bar, pie) only one serie is created using the dimension specified in xAxisConcept
-                const sortedData = sortByDimensionName(data, xAxisConcept);
-                xAxisValue = sortedData.map((val: any) => {
-                    return val[xAxisConcept];
-                });
-                hcExtraOptions["xAxis"] = {
-                    categories: xAxisValue
-                }
-                const yAxisValue = sortedData.map((val: any) => {
-                    return {
-                        //...dimensionSingleValues,
-                        ...val,
-                        y: val["value"], // TODO apply operation if provided
-                        name: (xAxisConcept?val[xAxisConcept]:val[config.legendConcept]),
-                    };
-                });
+                } else if(chartType == 'drilldown') {
+                    // TODO
+                } else {
+                    // other chart type (bar, pie) only one serie is created using the dimension specified in xAxisConcept
+                    const sortedData = sortByDimensionName(data, xAxisConcept);
+                    xAxisValue = sortedData.map((val: any) => {
+                        return val[xAxisConcept];
+                    });
+                    hcExtraOptions["xAxis"] = {
+                        categories: xAxisValue
+                    }
+                    const yAxisValue = sortedData.map((val: any) => {
+                        return {
+                            ...val,
+                            y: val["value"],
+                            name: xAxisConcept?val[xAxisConcept]:val[config.legendConcept],
+                        };
+                    });
 
-                if(config.LabelsYN) {
-                    hcExtraOptions["plotOptions"] = {
-                        [chartType]: {
-                            dataLabels: {
-                                enabled: true,
-                                formatter: function(this: any) {
-                                    debugger;
-                                    if(config.Unit == '%') {
-                                        if(chartType == "pie") {
-                                            return `${this.point?.name}: ${this.point?.percentage.toFixed(config.Decimals)} %`
+                    if(config.LabelsYN) {
+                        hcExtraOptions["plotOptions"] = {
+                            [chartType]: {
+                                dataLabels: {
+                                    enabled: true,
+                                    formatter: function(this: any) {
+                                        if(config.Unit == '%') {
+                                            if(chartType == "pie") {
+                                                return `${this.point?.name}: ${this.point?.percentage.toFixed(config.Decimals)} %`
+                                            } else {
+                                                return `${this.point?.percentage.toFixed(config.Decimals)} %`
+                                            }
                                         } else {
-                                            return `${this.point?.percentage.toFixed(config.Decimals)} %`
+                                                return `${this.point?.y?.toLocaleString()}`
                                         }
-                                    } else {
-                                        return `${this.point?.y?.toLocaleString()}`
                                     }
                                 }
                             }
                         }
                     }
-                }
 
-                seriesData = [{
-                    name: titleObj.text,
-                    data: yAxisValue,
-                },];
-            }
+                    // append data to the serie
+                    if(seriesData.length == 0) {
+                        seriesData = [{
+                            name: titleObj.text,
+                            data: yAxisValue,
+                        },];
+                    } else {
+                        seriesData[0].data.push(...yAxisValue);
+                    }
+                }
+            });
             loadedCallback(true);
             setHcOptions({
                 chart: {
@@ -220,7 +271,7 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                 series:seriesData,
                 ...hcExtraOptions,
             });
-        });
+        })
     }, [config]);
 
     return (
