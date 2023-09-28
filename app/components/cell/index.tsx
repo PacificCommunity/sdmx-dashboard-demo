@@ -24,6 +24,7 @@ const Cell = ({ config, loadedCallback }: {config: any, loadedCallback: any}) =>
         switch (config.chartType) {
             case 'BARS':
             case 'LINES':
+            case 'DRILLDOWN':
             case 'PIE':
                 return <Chart
                     config={config}
