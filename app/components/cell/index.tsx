@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Title from '@/app/components/title';
 import Value from '@/app/components/value';
 import Chart from '@/app/components/chart';
+import MapComponent from '@/app/components/map';
 import { ErrorBoundary } from 'react-error-boundary';
 
 /**
@@ -27,6 +28,11 @@ const Cell = ({ config, loadedCallback }: {config: any, loadedCallback: any}) =>
             case 'DRILLDOWN':
             case 'PIE':
                 return <Chart
+                    config={config}
+                    loadedCallback={loadedCallback}
+                />
+            case 'MAP':
+                return <MapComponent
                     config={config}
                     loadedCallback={loadedCallback}
                 />

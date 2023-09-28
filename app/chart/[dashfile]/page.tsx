@@ -59,12 +59,14 @@ export default function Page({ params }: { params: { dashfile: string } }) {
         Row: number;
         chartType: string;
         className?: string;
+        colorScheme?: string;
       }) => {
         if (element.Row !== row) {
           row = element.Row
           layout[row] = new Array()
         }
         element.className = parseColSize(element.chartType)
+        element.colorScheme = element.chartType.split(',')[2]?.trim()
         element.chartType = element.chartType.split(',')[0]
         layout[row].push(element)
       })
