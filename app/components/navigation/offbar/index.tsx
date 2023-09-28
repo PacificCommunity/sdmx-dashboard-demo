@@ -76,6 +76,7 @@ const Offbar = () => {
                                 )
                             )
                         }
+                        { /*
                         <Link
                             href='/upload'
                             onClick={handleClose}
@@ -83,6 +84,7 @@ const Offbar = () => {
                         >
                             <PlusCircleDotted className="me-2" />Upload new file
                         </Link>
+                        */ }
                     </div>
                 </Offcanvas.Body>
             </Offcanvas>

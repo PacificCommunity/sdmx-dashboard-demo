@@ -1,26 +1,35 @@
-'use client';
+"use client"
 
-import React from 'react';
+import React from 'react'
 
-import { Trash } from 'react-bootstrap-icons';
+import { confirmAlert } from 'react-confirm-alert'
+
+import { Trash } from 'react-bootstrap-icons'
+
+import './styles.custom.css'
 
 const DeleteButton = ({ uri }: { uri: string }) => {
 
     const confirmDelete = () => {
-        if (window.confirm('Are you sure you want to delete this dashboard?')) {
-            onConfirm();
-        } else {
-            onAbort();
-        }
-        
+        confirmAlert({
+            title: 'Confirm to delete',
+            message: `Are you sure to delete ${uri} ?`,
+            buttons: [
+                {
+                    label: 'Yes, delete it!',
+                    className: 'btn btn-danger',
+                    onClick: () => onConfirm()
+                },
+                {
+                    label: 'No, keep it.',
+                    className: 'btn btn-secondary'
+                }
+            ]
+        });
     }
 
     const onConfirm = async () => {
         await deleteDashboard(uri)
-    }
-
-    const onAbort = () => {
-        // nothing
     }
 
     const deleteDashboard = async (uri: string) => {

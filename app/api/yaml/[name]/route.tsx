@@ -65,7 +65,7 @@ export async function DELETE(request: NextRequest, { params }: {params: any}) {
         } else {
             await fsp.unlink(path.join(configFolderPath, `${params.name}.yaml`))
         }
-        return NextResponse.next()
+        return NextResponse.redirect(`${request.nextUrl.protocol}${request.nextUrl.host}/`)
     }
     catch (error) {
         console.error(error)
