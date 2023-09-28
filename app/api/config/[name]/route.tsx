@@ -3,7 +3,6 @@ import path from "path";
 import fs, { promises as fsp } from "fs";
 import yaml from "js-yaml";
 import { loadOneYamlFromGists } from "@/app/utils/loadYamlFromGists";
-import { Dash } from "react-bootstrap-icons";
 
 const configFolderPath = path.join(process.cwd(), "/public/uploads");
 
