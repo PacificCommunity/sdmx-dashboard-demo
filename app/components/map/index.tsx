@@ -37,9 +37,9 @@ const MapComponent = ({config, loadedCallback} : {config: any, loadedCallback: a
   const [ obsValueMax, setObsValueMax ] = useState<number>(0)
 
   // get ref to div element - OpenLayers will render into this div
-  const mapElement = useRef<HTMLElement>()
-  const tooltipElement = useRef<HTMLElement>()
-  const legendElement = useRef<HTMLElement>()
+  const mapElement = useRef<HTMLDivElement>(null)
+  const tooltipElement = useRef<HTMLDivElement>(null)
+  const legendElement = useRef<HTMLDivElement>(null)
     
   const sdmxParser = new SDMXParser();
 
@@ -95,6 +95,7 @@ const MapComponent = ({config, loadedCallback} : {config: any, loadedCallback: a
     legendElement.current!.children[0]!.innerHTML = config.Title
     legendElement.current!.children[1]!.innerHTML = `${Math.floor(obsValueMin).toLocaleString()} <img src="${getColorSchemePreview()}"/> ${Math.ceil(obsValueMax).toLocaleString()}`
   }
+
 
   const styleFunction = (feature: FeatureLike) => {
     
@@ -178,7 +179,7 @@ const MapComponent = ({config, loadedCallback} : {config: any, loadedCallback: a
     
     // create map
     const initialMap = new Map({
-        target: mapElement.current,
+        target: mapElement.current || '',
         layers: [
             new TileLayer({
                 source: new XYZ({
@@ -199,11 +200,11 @@ const MapComponent = ({config, loadedCallback} : {config: any, loadedCallback: a
     })
 
     initialMap.addControl(new Control({
-      element: legendElement.current
+      element: legendElement.current || undefined
     }));
 
     const overlay = new Overlay({
-      element: tooltipElement.current,
+      element: tooltipElement.current || undefined,
       offset: [10, 0],
       positioning: 'bottom-left',
       id: 'tooltip-overlay'
