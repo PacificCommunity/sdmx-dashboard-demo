@@ -66,7 +66,7 @@ export const loadOneYamlFromGists = async (DashID: string) => {
  * Authenticate using the GIST_TOKEN environment variable
  * @returns array of gists
  */
-const loadUserGists = async () => {
+export const loadUserGists = async () => {
     try {
         const gist = await fetch('https://api.github.com/gists', {
             method: 'GET',
