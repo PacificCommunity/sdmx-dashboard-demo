@@ -34,6 +34,14 @@ pnpm dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 
+## Build and run docker image
+
+```
+docker build -t dashboard-creator .
+
+docker run -p 3000:3000 dashboard-creator
+```
+
 ## General documentation
 
 This application uses SDMX-JSON format for the data (version 2) provided by the [sdmx-json-parser library](https://pacificcommunity.github.io/sdmx-json-parser/).
