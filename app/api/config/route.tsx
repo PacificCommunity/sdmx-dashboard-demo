@@ -35,10 +35,11 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
-        const yamlfile = formData.get('yamlfile');
+        const yamlfile = formData.get('yamlfile') as Blob | null;
         let ymlobj: any = {};
         let ymlstring: string = '';
-        if (yamlfile instanceof File && yamlfile.name) {
+
+        if (yamlfile) {
             const bytes = await yamlfile.arrayBuffer();
             const buffer = Buffer.from(bytes);
             try {
