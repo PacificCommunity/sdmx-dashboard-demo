@@ -35,13 +35,25 @@ export const parseDataExpr = (dataExprs: [string]) => {
       parsedExpr['alternateLabel'] = alternateLabel;
     }
 
-    const tokens = dataExpr.split(' ');
+    // when we have an operation
+    const tokens = dataExpr.split(/ [/*+-] /g);
     if (tokens.length == 1) {
       parsedExpr['dataFlowUrl'] = tokens[0].trim();
     } else {
       parsedExpr['dataFlowUrl'].push(tokens[0].trim());
-      parsedExpr['operator'] = tokens[1];
-      parsedExpr['operand'] = tokens[2];
+      parsedExpr['operator'] = dataExpr.match(/ [/*+-] /g)![0].trim()
+      parsedExpr['operand'] = tokens[1];
+    }
+
+    // when we have a map with joined urls
+    const tokensMap = dataExpr.split(' | ')
+    // syntax for map DATA is like "SDMX_URL, {JOIN_KEY_SDMX} | GEOJSON_URL, {JOIN_KEY_GEOJSON}"
+    if (tokensMap.length == 2) {
+      parsedExpr['dataFlowUrl'] = tokensMap[0].split(', ')[0]
+      parsedExpr['dataFlowKey'] = tokensMap[0].split(', ')[1].trim().replace(/[\{\}]+/g, '')
+      parsedExpr['geojsonUrl'] = tokensMap[1].split(', ')[0]
+      parsedExpr['geojsonProjection'] = tokensMap[1].split(', ')[1]
+      parsedExpr['geojsonKey'] = tokensMap[1].split(', ')[2].trim().replace(/[\{\}]+/g, '')
     }
     
     results.push(parsedExpr);
