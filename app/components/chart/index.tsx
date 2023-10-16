@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { SDMXParser } from 'sdmx-json-parser';
 import { parseTextExpr, parseOperandTextExpr } from '@/app/utils/parseTextExpr';
 import { parseDataExpr } from "@/app/utils/parseDataExpr";
+import { parseDate } from "@/app/utils/parseDate";
 
 if (typeof Highcharts === 'object') {
     HighchartsExporting(Highcharts);
@@ -192,7 +193,7 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                             //...dimensionSingleValues,
                             ...val,
                             y: val["value"],
-                            x: Date.UTC(val[xAxisConcept].split('-')[0], (val[xAxisConcept].split('-').length > 1 ? val[xAxisConcept].split('-')[1]: 1), (val[xAxisConcept].split('-').length > 2 ? val[xAxisConcept].split('-')[2]: 1))
+                            x: parseDate(val[xAxisConcept])
                             };
                         });
                         seriesData.push({
@@ -213,8 +214,8 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                         if (xAxisConcept == "TIME_PERIOD") {
                             // we display the latest value in the bar and the whole time series in drilldown
                             serieDimensionData.forEach((value: any) => {
-                                const valueDate = Date.UTC(value[xAxisConcept].split('-')[0], (value[xAxisConcept].split('-').length > 1 ? value[xAxisConcept].split('-')[1]: 1), (value[xAxisConcept].split('-').length > 2 ? value[xAxisConcept].split('-')[2]: 1))
-                                const serieDataDimensionValueDate = Date.UTC(serieDataDimensionValue[xAxisConcept].split('-')[0], (serieDataDimensionValue[xAxisConcept].split('-').length > 1 ? serieDataDimensionValue[xAxisConcept].split('-')[1]: 1), (serieDataDimensionValue[xAxisConcept].split('-').length > 2 ? serieDataDimensionValue[xAxisConcept].split('-')[2]: 1))
+                                const valueDate = parseDate(value[xAxisConcept])
+                                const serieDataDimensionValueDate = parseDate(serieDataDimensionValue[xAxisConcept])
                                 if(value["TIME_PERIOD"] > serieDataDimensionValue["TIME_PERIOD"]) {
                                     serieDataDimensionValue = value;
                                 }
