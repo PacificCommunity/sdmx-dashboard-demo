@@ -4,6 +4,8 @@ import { parseOperandTextExpr, parseTextExpr } from '@/app/utils/parseTextExpr';
 import { SDMXParser } from 'sdmx-json-parser';
 import { parseDataExpr } from "@/app/utils/parseDataExpr";
 
+import styles from './styles.module.css'
+
 const Value = ({ config, loadedCallback }: {config: any, loadedCallback: any}) => {
 
     const [titleObject, setTitleObject] = useState<any>({ text: "Loading..." })
@@ -99,10 +101,12 @@ const Value = ({ config, loadedCallback }: {config: any, loadedCallback: any}) =
     }, []);
 
     return (
-        <div className="pt-3 pb-2 px-2 px-xl-3 bg-white h-100 display-flex">
+        <div className={`pt-3 pb-2 px-2 px-xl-3 bg-white h-100 d-flex flex-column ${styles.valueContainer}`}>
             <h2 className={`${titleObject.bootstrapcss && titleObject.bootstrapcss.join(' ')}`} style={titleObject.inlinecss}>{titleObject.text}</h2>
             {subTitleObject['text'] && (<h4 className={`${subTitleObject.bootstrapcss && subTitleObject.bootstrapcss.join(' ')}`} style={subTitleObject.inlinecss}>{subTitleObject.text}</h4>)}
-            <p className="text-center">{valueStr}</p>
+            <div className="display-1 flex-grow-1 d-flex align-items-center justify-content-center">
+                <p>{valueStr}</p>
+            </div>
         </div>
 
     )
