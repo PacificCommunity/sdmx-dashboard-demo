@@ -48,7 +48,11 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
     const processChartExpr = (chartExpr: string) => {
         const chartType = chartExpr.split(',')[0];
         switch (chartType) {
+            case 'VBARS':
             case 'BARS':
+                return 'column'
+                break;
+            case 'HBARS':
                 return 'bar'
                 break;
             case 'LINES':
