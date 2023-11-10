@@ -73,7 +73,11 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
         if (!chartType) {
             throw new Error('Chart type not defined');
         }
-        const hcExtraOptions : any = {};
+        const hcExtraOptions : any = { 
+            plotOptions: {
+                [chartType]: {}
+            }
+        };
 
         let seriesData : any[] = [];
         let xAxisValue = [];
@@ -283,24 +287,27 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                     });
 
                     if(config.LabelsYN) {
-                        hcExtraOptions["plotOptions"] = {
-                            [chartType]: {
-                                dataLabels: {
-                                    enabled: true,
-                                    formatter: function(this: any) {
-                                        if(config.Unit == '%') {
-                                            if(chartType == "pie") {
-                                                return `${this.point?.name}: ${this.point?.percentage.toFixed(config.Decimals)} %`
-                                            } else {
-                                                return `${this.point?.percentage.toFixed(config.Decimals)} %`
-                                            }
+                        hcExtraOptions["plotOptions"][chartType] = {
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function(this: any) {
+                                    if(config.Unit == '%') {
+                                        if(chartType == "pie") {
+                                            return `${this.point?.name}: ${this.point?.percentage.toFixed(config.Decimals)} %`
                                         } else {
-                                            return `${this.point?.y?.toLocaleString()}`
+                                            return `${this.point?.percentage.toFixed(config.Decimals)} %`
                                         }
+                                    } else {
+                                        return `${this.point?.y?.toLocaleString()}`
                                     }
                                 }
                             }
                         }
+                    }
+
+                    // force legend for Pie charts
+                    if (config.legendLoc != 'HIDE' && chartType == 'pie') {
+                        hcExtraOptions["plotOptions"][chartType]["showInLegend"] = true;
                     }
 
                     // append data to the serie
@@ -331,7 +338,7 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                 },
                 legend: {
                     enabled: config.legendLoc == 'HIDE' ? false : true,
-                    align: 'right'//config.legendLoc.toLowerCase()
+                    align: config.legendLoc.toLowerCase() || 'right'
                 },
                 series:seriesData,
                 ...hcExtraOptions,
