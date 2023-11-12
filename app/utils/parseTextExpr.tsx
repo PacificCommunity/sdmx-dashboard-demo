@@ -115,15 +115,12 @@ export const parseTextExpr = (titleExpr: string, dimensions: any[]) => {
         result.hcStyle.fontStyle = 'italic';
         break;
       case 'left':
-        result.bootstrapcss.push('text-start');
         result.align = 'left';
         break;
       case 'center':
-        result.bootstrapcss.push('text-center');
         result.align = 'center';
         break;
       case 'right':
-        result.bootstrapcss.push('text-end');
         result.align = 'right';
         break;
       default:
@@ -137,6 +134,20 @@ export const parseTextExpr = (titleExpr: string, dimensions: any[]) => {
         break;
     }
   });
+
+  // add CSS text alignment classes to bootstrapcss
+  switch (result.align) {
+    case 'left':
+      result.bootstrapcss.push('text-start');
+      break;
+    case 'right':
+      result.bootstrapcss.push('text-end');
+      break;
+    default:
+      // default is centered text
+      result.bootstrapcss.push('text-center');
+      break;
+  }
 
   return result;
 
