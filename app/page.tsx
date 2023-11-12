@@ -1,6 +1,6 @@
 import { NextPage } from 'next'
 
-import Homebar from 'app/components/navigation/homebar'
+import Homebar from './components/navigation/homebar'
 
 const Home: NextPage = async () => {
 
