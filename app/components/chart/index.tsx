@@ -342,7 +342,7 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                 },
                 legend: {
                     enabled: config.legendLoc == 'HIDE' ? false : true,
-                    align: config.legendLoc.toLowerCase() || 'right'
+                    align: config.legendLoc && config.legendLoc.toLowerCase() || 'right'
                 },
                 series:seriesData,
                 ...hcExtraOptions,
