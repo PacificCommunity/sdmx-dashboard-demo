@@ -296,7 +296,7 @@ const MapComponent = ({config, loadedCallback} : {config: any, loadedCallback: a
   
   return (
     <div>
-      <div ref={mapElement} className={`map ${styles.mapContainer}`}></div>
+      <div ref={mapElement} className="map min-cell-height"></div>
       <div ref={tooltipElement} className={`${styles.mapTooltip}`}>
         <div className={`${styles.mapTooltipHeader}`} id="map-tooltip-header"></div>
         <div id="map-tooltip-content"></div>
