@@ -354,6 +354,7 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
         <HighchartsReact
           highcharts={Highcharts}
           options={hcOptions}
+          containerProps={{ className: config.frameYN && config.frameYN.toLowerCase() == 'yes' ? "border" : "" }}
         />
     )
 }

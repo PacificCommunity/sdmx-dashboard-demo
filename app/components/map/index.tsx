@@ -295,7 +295,7 @@ const MapComponent = ({config, loadedCallback} : {config: any, loadedCallback: a
   }, [obsValueMax, obsValueMin])
   
   return (
-    <div>
+    <div className={`${config.frameYN && config.frameYN.toLowerCase() == 'yes' ? "border" : "" }`}>
       <div ref={mapElement} className="map min-cell-height"></div>
       <div ref={tooltipElement} className={`${styles.mapTooltip}`}>
         <div className={`${styles.mapTooltipHeader}`} id="map-tooltip-header"></div>

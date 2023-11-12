@@ -99,7 +99,7 @@ const Value = ({ config, loadedCallback }: {config: any, loadedCallback: any}) =
     }, []);
 
     return (
-        <div className="pt-3 pb-2 px-2 px-xl-3 bg-white h-100 d-flex flex-column min-cell-height">
+        <div className={`pt-3 pb-2 px-2 px-xl-3 bg-white h-100 d-flex flex-column min-cell-height ${config.frameYN && config.frameYN.toLowerCase() == 'yes' ? "border" : "" }`}>
             <h2 className={`${titleObject.bootstrapcss && titleObject.bootstrapcss.join(' ')}`} style={titleObject.inlinecss}>{titleObject.text}</h2>
             {subTitleObject['text'] && (<h4 className={`${subTitleObject.bootstrapcss && subTitleObject.bootstrapcss.join(' ')}`} style={subTitleObject.inlinecss}>{subTitleObject.text}</h4>)}
             <div className="display-2 flex-grow-1 d-flex align-items-center justify-content-center">
