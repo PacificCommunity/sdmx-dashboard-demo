@@ -72,7 +72,6 @@ export default function Page({ params }: { params: { dashfile: string } }) {
       })
       setDashId(data.dashID)
       setDashConfig(layout)
-      console.log(layout)
       setReady(true)
     });
   }, [])

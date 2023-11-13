@@ -49,3 +49,9 @@ button.menu-button:hover {
   display: flex;
   flex-direction: column;
 }
+.min-cell-height {
+  min-height: 400px;
+}
+.map.min-cell-height {
+  height: 400px;
+}

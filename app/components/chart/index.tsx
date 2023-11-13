@@ -342,7 +342,7 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                 },
                 legend: {
                     enabled: config.legendLoc == 'HIDE' ? false : true,
-                    align: config.legendLoc.toLowerCase() || 'right'
+                    align: config.legendLoc && config.legendLoc.toLowerCase() || 'right'
                 },
                 series:seriesData,
                 ...hcExtraOptions,
@@ -354,6 +354,7 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
         <HighchartsReact
           highcharts={Highcharts}
           options={hcOptions}
+          containerProps={{ className: config.frameYN && config.frameYN.toLowerCase() == 'yes' ? "border" : "" }}
         />
     )
 }
