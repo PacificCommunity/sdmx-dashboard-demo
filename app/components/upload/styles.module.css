@@ -15,7 +15,6 @@
 .uploaded {
     color: #393;
 }
-
-.erroneous, #rejectedfiles li {
+.erroneous {
     color: #c33;
 }

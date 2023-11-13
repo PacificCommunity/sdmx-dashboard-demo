@@ -21,9 +21,7 @@ const UploadDropzone = () => {
     onDropAccepted: files => {
       files.forEach(async file => {
         try {
-
-          // console.log('TRY TO UPLOAD', file);
-
+          // Upload file to server using upload API
           let formData = new FormData();
           formData.append("yamlfile", file);
 
@@ -32,34 +30,22 @@ const UploadDropzone = () => {
             body: formData,
           });
 
-          // console.log('API sent response');
-
+          // parse message
           const data = await res.json();
 
-          // console.log('PARSED RESPONSE', res, data);
-
           if (!data || !data.success) {
-            // alert(data.error || "Sorry! something went wrong.");
-            errorFiles.push(file.name);
-            setErrorFiles([...errorFiles]);
-            return;
+            // Error parsing file content: add erroneous file to list
+            setErrorFiles(errorFiles => [...errorFiles, file.name]);
+          } else {
+            // Success: add to list of successfully uploaded files
+            setUploadedFiles(uploadedFiles => [...uploadedFiles, file.name]);
           }
 
-          uploadedFiles.push(file.name);
-          setUploadedFiles([...uploadedFiles]);
-
         } catch (error) {
-          // console.error(error);
-          errorFiles.push(file.name);
-          setErrorFiles([...errorFiles]);
+          // Error uploading file: add erroneous file to list
+          setErrorFiles(errorFiles => [...errorFiles, file.name]);
         }
       });
-    },
-    onDropRejected: fileRejections => {
-      // fileRejections.map(({ file, errors }) => {
-      //   console.log('ERROR', file, errors);
-      // }
-      // );
     }
   });
 
@@ -67,7 +53,7 @@ const UploadDropzone = () => {
     <section>
       <div {...getRootProps({ className: `d-flex justify-content-center align-items-center ${styles.dropzone}` })}>
         <input {...getInputProps()} />
-        <div>Drag 'n' drop some files here, or click to select files</div>
+        <div>Drag &apos;n&apos; drop some files here, or click to select files</div>
       </div>
       {acceptedFiles.length > 0 || fileRejections.length > 0 ? (
         <div id={styles.acceptedfiles} className="mt-4">
@@ -80,7 +66,7 @@ const UploadDropzone = () => {
               </li>
             ))}
             {fileRejections.map(item => (
-              <li key={item.file.name} className={`rejected ${styles.erroneous}`}>
+              <li key={item.file.name} className={`${styles.erroneous}`}>
                 {item.file.name} <small>- Wrong type of file</small>
               </li>
             ))}
