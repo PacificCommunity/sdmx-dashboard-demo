@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import UploadComponent from '@/app/components/upload'
+import UploadDropzone from '@/app/components/upload'
 
 const Upload: NextPage = () => {
 
@@ -8,7 +8,7 @@ const Upload: NextPage = () => {
         <div className="col col-sm-auto">
             <h1>Upload</h1>
             <p>Upload new config files below.<br />JSON and YAML formats accepted.</p>
-            <UploadComponent />
+            <UploadDropzone />
         </div>
     </div>
   )
