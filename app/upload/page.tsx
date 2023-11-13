@@ -7,7 +7,7 @@ const Upload: NextPage = () => {
     <div className="row justify-content-center my-4">
         <div className="col col-sm-auto">
             <h1>Upload</h1>
-            <p>Click below to upload a new YAML file.</p>
+            <p>Upload new config files below.<br />JSON and YAML formats accepted.</p>
             <UploadComponent />
         </div>
     </div>

@@ -1,9 +1,21 @@
-#uploadform {
+.dropzone {
     border: 3px dotted #ddd !important;
     width: 94vw;
     max-width: 450px;
+    height: 10rem;
+    border-radius: 10px;
 }
-.icon {
-    width: 5rem;
-    height: 5rem;
+.dropzone > div {
+    color: #999;
+    text-align: center;
+}
+.uploading {
+    color: #999;
+}
+.uploaded {
+    color: #393;
+}
+
+.erroneous, #rejectedfiles li {
+    color: #c33;
 }

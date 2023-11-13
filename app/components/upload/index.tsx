@@ -1,143 +1,99 @@
 "use client"
 
-import React from "react";
-import { ChangeEvent, useState } from "react"
+import React, { useState } from "react";
+import { useDropzone } from 'react-dropzone'
 
+import Link from "next/link";
 import styles from './styles.module.css'
 
-const UploadComponent = () => {
+const UploadDropzone = () => {
 
-  const [file, setFile] = useState<File | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [errorFiles, setErrorFiles] = useState([]);
 
+  const { acceptedFiles, fileRejections, getRootProps, getInputProps } = useDropzone({
+    accept: {
+      'text/plain': ['.yaml', '.yml', '.json'],
+      'application/json': ['.json'],
+      'application/x-yaml': ['.yaml', '.yml'],
+      'text/yaml': ['.yaml', '.yml']
+    },
+    onDropAccepted: files => {
+      files.forEach(async file => {
+        try {
 
-  const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const fileInput = e.target;
+          // console.log('TRY TO UPLOAD', file);
 
-    if (!fileInput.files) {
-      alert("No file was chosen");
-      return;
-    }
+          let formData = new FormData();
+          formData.append("yamlfile", file);
 
-    if (!fileInput.files || fileInput.files.length === 0) {
-      alert("Files list is empty");
-      return;
-    }
+          const res = await fetch("/api/config", {
+            method: "POST",
+            body: formData,
+          });
 
-    const file = fileInput.files[0];
+          // console.log('API sent response');
 
-    /** File validation */
-    // file.type seems empty so let's check for file extension
-    // not reliable but this is a first block
-    if (!/\.(yml|yaml)$/i.test(file.name)) {
-      alert("Please select a YAML file");
-      return;
-    }
+          const data = await res.json();
 
-    /** Setting file state */
-    setFile(file); // we will use the file state, to send it later to the server
+          // console.log('PARSED RESPONSE', res, data);
 
-    /** Reset file input */
-    e.currentTarget.type = "text";
-    e.currentTarget.type = "file";
+          if (!data || !data.success) {
+            // alert(data.error || "Sorry! something went wrong.");
+            errorFiles.push(file.name);
+            setErrorFiles([...errorFiles]);
+            return;
+          }
 
-  };
+          uploadedFiles.push(file.name);
+          setUploadedFiles([...uploadedFiles]);
 
-  const onCancelFile = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!file) {
-      return;
-    }
-    setFile(null);
-  };
-
-  const onUploadFile = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!file) {
-      return;
-    }
-
-    try {
-      let formData = new FormData();
-      formData.append("yamlfile", file);
-
-      const res = await fetch("/api/config", {
-        method: "POST",
-        body: formData,
+        } catch (error) {
+          // console.error(error);
+          errorFiles.push(file.name);
+          setErrorFiles([...errorFiles]);
+        }
       });
-
-      // console.log('API sent response');
-
-      const data = await res.json();
-
-      // console.log('PARSED RESPONSE', res, data);
-
-      setFile(null);
-
-      if (!data || !data.success) {
-        alert(data.error || "Sorry! something went wrong.");
-        return;
-      }
-
-      console.log("File was uploaded successfully:", data.url);
-      
-      // Redirect to home page
-      window.location.href = '/';
-    } catch (error) {
-      console.error(error);
-      alert("Sorry! something went wrong.");
+    },
+    onDropRejected: fileRejections => {
+      // fileRejections.map(({ file, errors }) => {
+      //   console.log('ERROR', file, errors);
+      // }
+      // );
     }
-  };
+  });
 
-  return (<form
-    id={styles.uploadform}
-    className="p-3 border bg-light rounded"
-    action=""
-  >
-    <div className="d-flex flex-column">
-      <label className={`d-flex flex-column justify-content-center text-center ${file ? 'opacity-75' : 'opacity-50'}`}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className={`${styles.icon} mx-auto`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
-          />
-        </svg>
-        <strong>{file ? file.name : "Click to select a file"}</strong>
-        <input
-          className="d-none"
-          name="file"
-          type="file"
-          accept=".yml,.yaml"
-          onChange={onFileUploadChange}
-        />
-      </label>
-      <div className="d-flex flex-row justify-content-evenly mt-4">
-        <button
-          disabled={file ? false : true}
-          onClick={onCancelFile}
-          className="btn btn-outline-secondary rounded"
-        >
-          Cancel file
-        </button>
-        <button
-          disabled={!file}
-          onClick={onUploadFile}
-          className="btn btn-outline-primary rounded"
-        >
-          Upload file
-        </button>
+  return (
+    <section>
+      <div {...getRootProps({ className: `d-flex justify-content-center align-items-center ${styles.dropzone}` })}>
+        <input {...getInputProps()} />
+        <div>Drag 'n' drop some files here, or click to select files</div>
       </div>
-    </div>
-  </form>)
-
+      {acceptedFiles.length > 0 || fileRejections.length > 0 ? (
+        <div id={styles.acceptedfiles} className="mt-4">
+          <h4>Upload status</h4>
+          <ul>
+            {acceptedFiles.map(file => (
+              <li key={file.name} className={`${uploadedFiles.indexOf(file.name) !== -1 ? styles.uploaded : errorFiles.includes(file.name) ? styles.erroneous : styles.uploading}`}>
+                {file.name}
+                {errorFiles.includes(file.name) ? <small> - Invalid config file</small> : null}
+              </li>
+            ))}
+            {fileRejections.map(item => (
+              <li key={item.file.name} className={`rejected ${styles.erroneous}`}>
+                {item.file.name} <small>- Wrong type of file</small>
+              </li>
+            ))}
+          </ul>
+          <Link
+            href='/'
+            className='btn btn-primary'
+          >Go back to home page</Link>
+        </div>
+      ) : null}
+    </section>
+  )
 
 }
 
-export default UploadComponent;
+export default UploadDropzone;
