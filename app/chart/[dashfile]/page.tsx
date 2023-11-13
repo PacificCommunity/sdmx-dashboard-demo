@@ -55,6 +55,14 @@ export default function Page({ params }: { params: { dashfile: string } }) {
     loadJsonFile(params.dashfile).then((data) => {
       let layout = new Array()
       let row = -1
+      // store Footer row separately to append to final list
+      const footerElement = data.Rows.filter((element: { chartType: string; }, index: number, arr: []) => {
+        if (element.chartType === 'FOOTER') {
+          arr.splice(index, 1)
+          return true;
+        }
+        return false;
+      })
       data.Rows.forEach((element: {
         Row: number;
         chartType: string;
@@ -70,9 +78,10 @@ export default function Page({ params }: { params: { dashfile: string } }) {
         element.chartType = element.chartType.split(',')[0]
         layout[row].push(element)
       })
+
+      layout[layout.length] = footerElement;
       setDashId(data.dashID)
       setDashConfig(layout)
-      console.log(layout)
       setReady(true)
     });
   }, [])
