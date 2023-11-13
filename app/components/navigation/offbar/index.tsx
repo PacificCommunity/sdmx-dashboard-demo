@@ -8,39 +8,34 @@ import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { SlashCircle, ClipboardData, PlusCircleDotted } from 'react-bootstrap-icons';
 
-import { signal } from '@preact/signals-react';
-
-export const dashboards = signal([])
-export const dashboardsLoading = signal(true)
-
-const getDashboards = async () => {
-    const res = await fetch('/api/config')
-    if (!res.ok) {
-        // This will activate the closest `error.js` Error Boundary
-        throw new Error('Failed to fetch data')
-    }
-
-    let jsonres = await res.json()
-    console.log('list is loaded', jsonres)
-    return jsonres
-}
-
 const Offbar = () => {
 
     const [show, setShow] = useState(false);
+    const [sideLoading, setSideLoading] = useState(true)
+    const [sideList, setSideList] = useState([])
 
     const currentRoute = usePathname()
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const getJsonFiles = async () => {
+        const res = await fetch('/api/config')
+
+        if (!res.ok) {
+            // This will activate the closest `error.js` Error Boundary
+            throw new Error('Failed to fetch data')
+        }
+
+        return await res.json()
+    }
+
     useEffect(() => {
-        // console.log('Effect starts')
-        getDashboards().then((data) => {
-            dashboards.value = data
-            // console.log('What now?', dashboards);
-            dashboardsLoading.value = false
-        })
+        getJsonFiles().then((data) => {
+            setSideList(data)
+            setSideLoading(false)
+        });
+
     }, [])
 
     return (
@@ -57,15 +52,15 @@ const Offbar = () => {
                 <Offcanvas.Body className="p-0">
                     <div className="list-group list-group-flush">
                         {
-                            dashboardsLoading.value ? (
+                            sideLoading ? (
                                 <div className="list-group-item text-center py-4 opacity-25">
                                     <Spinner animation="border" role="status">
                                         <span className="visually-hidden">Loading...</span>
                                     </Spinner>
                                 </div>
-                            ) : (dashboards.value.length > 0 ?
+                            ) : (sideList.length > 0 ?
                                 (
-                                    dashboards.value.map((item: any) => (
+                                    sideList.map((item: any) => (
                                         <Link
                                             key={item.uri}
                                             href={`/chart/${item.uri}`}
