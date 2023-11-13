@@ -8,8 +8,8 @@ import styles from './styles.module.css'
 
 const UploadDropzone = () => {
 
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [errorFiles, setErrorFiles] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  const [errorFiles, setErrorFiles] = useState<string[]>([]);
 
   const { acceptedFiles, fileRejections, getRootProps, getInputProps } = useDropzone({
     accept: {
