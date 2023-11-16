@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { loadUserGists } from "@/app/utils/loadYamlFromGists";
 import path from "path";
 import fs, { promises as fsp } from "fs";
+import { revalidateTag } from "next/cache"
 
 const configFolderPath = path.join(process.cwd(), "/public/uploads");
 
@@ -61,6 +62,9 @@ export async function DELETE(request: NextRequest, { params }: {params: any}) {
                     'Authorization': `token ${process.env.GIST_TOKEN}`
                 }
             });
+
+            // Revalidate gist fetching cache
+            revalidateTag('gists')
                     
         } else {
             await fsp.unlink(path.join(configFolderPath, `${params.name}.yaml`))

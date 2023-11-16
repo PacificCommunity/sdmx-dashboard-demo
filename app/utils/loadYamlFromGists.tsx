@@ -75,7 +75,7 @@ export const loadUserGists = async () => {
             },
             next: {
                 tags: ['gists'],
-                revalidate: 120 // revalidate cache every 2 minutes
+                revalidate: 60 // revalidate cache every 1 minute
             }
         })
         return await gist.json()
