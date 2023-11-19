@@ -6,7 +6,7 @@ import yaml from "js-yaml";
 import { saveYmlAsGist } from "@/app/utils/saveYmlAsGist";
 
 import { loadDashboards } from '@/app/utils/loadDashboards'
-import { revalidateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 
 const configFolderPath = path.join(process.cwd(), "/public/uploads");
 
@@ -60,6 +60,8 @@ export async function POST(request: NextRequest) {
                         ymlstring,
                         process.env.GIST_PUBLIC == 'true' || process.env.GIST_PUBLIC == '1'
                     );
+                    // revalidate fetch call for gists
+                    revalidateTag('dashboards');
                 } else {
                     // Fallback, save file in uploads folder
                     // DashID is any string composed of numbers, letters, and underscores (_) 
@@ -67,8 +69,9 @@ export async function POST(request: NextRequest) {
                     const finalname = `${ymlobj.DashID.replace(' ', '-')}.yaml`;
                     fs.writeFileSync(`${configFolderPath}/${finalname}`, buffer);
                 }
-                // Revalidate cache on success
-                revalidateTag('gists')
+                // Revalidate cache on successful upload
+                revalidatePath('/')
+                revalidatePath('/chart/[dashfile]')
                 // Return success message
                 return NextResponse.json({ success: true });
             } catch (e) {
