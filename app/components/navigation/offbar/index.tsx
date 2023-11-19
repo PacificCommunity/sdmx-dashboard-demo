@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { SlashCircle, ClipboardData, PlusCircleDotted } from 'react-bootstrap-icons';
 
-const Offbar = () => {
+const Offbar = ({dashboards}: any) => {
 
     const [show, setShow] = useState(false);
     const [sideLoading, setSideLoading] = useState(true)
@@ -19,24 +19,10 @@ const Offbar = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const getJsonFiles = async () => {
-        const res = await fetch('/api/config')
-
-        if (!res.ok) {
-            // This will activate the closest `error.js` Error Boundary
-            throw new Error('Failed to fetch data')
-        }
-
-        return await res.json()
-    }
-
     useEffect(() => {
-        getJsonFiles().then((data) => {
-            setSideList(data)
-            setSideLoading(false)
-        });
-
-    }, [])
+        setSideList(dashboards)
+        setSideLoading(false)
+    }, [dashboards])
 
     return (
         <>
@@ -67,6 +53,7 @@ const Offbar = () => {
                                             title={`Last updated on ${new Date(item.date).toString()}`}
                                             onClick={handleClose}
                                             className={`list-group-item list-group-item-action p-3 ${currentRoute == '/chart/' + item.uri ? 'active' : ''}`}
+                                            prefetch={false}
                                         >
                                             <ClipboardData className="me-2" />{item.name}
                                         </Link>
@@ -76,15 +63,6 @@ const Offbar = () => {
                                 )
                             )
                         }
-                        { /*
-                        <Link
-                            href='/upload'
-                            onClick={handleClose}
-                            className={`list-group-item list-group-item-action p-3 ${currentRoute == '/upload' ? 'active' : ''}`}
-                        >
-                            <PlusCircleDotted className="me-2" />Upload new file
-                        </Link>
-                        */ }
                     </div>
                 </Offcanvas.Body>
             </Offcanvas>
