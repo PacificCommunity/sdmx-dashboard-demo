@@ -13,10 +13,9 @@ import { ErrorBoundary } from 'react-error-boundary';
  * @todo create component with type = VALUE
  * 
  * @param config Dashboard element configuration
- * @param loadedCallback set to true when ready
  * @returns 
  */
-const Cell = ({ config, loadedCallback }: {config: any, loadedCallback: any}) => {
+const Cell = ({ config }: {config: any}) => {
 
     const [ready, setReady] = useState(false)
 
@@ -31,23 +30,19 @@ const Cell = ({ config, loadedCallback }: {config: any, loadedCallback: any}) =>
             case 'PIE':
                 return <Chart
                     config={config}
-                    loadedCallback={loadedCallback}
                 />
             case 'MAP':
                 return <MapComponent
                     config={config}
-                    loadedCallback={loadedCallback}
                 />
             case 'TITLE':
             case 'FOOTER':
                 return <Title
                     config={config}
-                    loadedCallback={loadedCallback}
                 />
             case 'VALUE':
                 return <Value
                     config={config}
-                    loadedCallback={loadedCallback}
                 />
             default:
                 return <p className="text-danger">[{config.chartType}]<br />{config.Title}</p>

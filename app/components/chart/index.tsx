@@ -18,7 +18,7 @@ if (typeof Highcharts === 'object') {
     Drilldown(Highcharts)
 }
 
-const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) => {
+const Chart = ({config} : {config: any}) => {
 
     const [ready, setReady] = useState(false)
     const [chartId, setChartId] = useState('chart-1')
@@ -325,7 +325,6 @@ const Chart = ({config, loadedCallback} : {config: any, loadedCallback: any}) =>
                     }
                 }
             });
-            loadedCallback(true);
             setHcOptions({
                 chart: {
                     type: chartType == 'drilldown' ? 'column' : chartType,
