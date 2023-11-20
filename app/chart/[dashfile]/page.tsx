@@ -45,6 +45,14 @@ export default async function Page({ params }: { params: { dashfile: string } })
 
         let layout = new Array()
         let row = -1
+        // store Footer row separately to append to final list
+        const footerElement = data.Rows.filter((element: { chartType: string; }, index: number, arr: []) => {
+            if (element.chartType === 'FOOTER') {
+            arr.splice(index, 1)
+            return true;
+            }
+            return false;
+        })
         data.Rows.forEach((element: {
             Row: number;
             chartType: string;
@@ -61,6 +69,7 @@ export default async function Page({ params }: { params: { dashfile: string } })
             layout[row].push(element)
         })
 
+        layout[layout.length] = footerElement;
         // return pageDataType object
         return {
             dashId: data.dashID,
