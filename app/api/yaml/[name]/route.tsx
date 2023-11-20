@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
+import { revalidatePath } from 'next/cache'
 import { loadUserGists } from "@/app/utils/loadYamlFromGists";
 import path from "path";
 import fs, { promises as fsp } from "fs";
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest, { params }: { params: any }) {
  * @param name name of the file to delete
  * @returns text (YAML) 
  */
-export async function DELETE(request: NextRequest, { params }: {params: any}) {
+export async function DELETE(request: NextRequest, { params }: { params: any }) {
     try {
         if (process.env.GIST_TOKEN) {
             // delete gist
@@ -64,15 +65,20 @@ export async function DELETE(request: NextRequest, { params }: {params: any}) {
             });
 
             // Revalidate gist fetching cache
-            revalidateTag('gists')
-                    
+            revalidateTag('dashboards');
+
         } else {
             await fsp.unlink(path.join(configFolderPath, `${params.name}.yaml`))
         }
+
+        // Revalidate cache on successful deletion
+        revalidatePath('/')
+        revalidatePath('/chart/[dashfile]')
+
         return NextResponse.redirect(`${request.nextUrl.protocol}${request.nextUrl.host}/`)
     }
     catch (error) {
         console.error(error)
-        return NextResponse.json({error: `Error deleting file ${params.name}.yaml`}, {status: 500})
+        return NextResponse.json({ error: `Error deleting file ${params.name}.yaml` }, { status: 500 })
     }
 }

@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useDropzone } from 'react-dropzone'
 
-import Link from "next/link";
 import styles from './styles.module.css'
 
 const UploadDropzone = () => {
@@ -71,10 +70,10 @@ const UploadDropzone = () => {
               </li>
             ))}
           </ul>
-          <Link
+          <a
             href='/'
             className='btn btn-primary'
-          >Go back to home page</Link>
+          >Go back to home page</a>
         </div>
       ) : null}
     </section>

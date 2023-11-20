@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { parseTextExpr } from '@/app/utils/parseTextExpr';
 
-const Title = ({ config, loadedCallback }: {config: any, loadedCallback : any}) => {
+const Title = ({ config }: {config: any}) => {
 
     const [titleObject, setTitleObject] = useState<any>({ text: "Loading..." })
     const [subTitleObject, setSubTitleObject] = useState<any>({ text: "Loading..." })
@@ -10,8 +10,7 @@ const Title = ({ config, loadedCallback }: {config: any, loadedCallback : any}) 
         const titleObj = parseTextExpr(config.Title, [])
         setTitleObject(titleObj)
         setSubTitleObject(parseTextExpr(config.Subtitle, []))
-        loadedCallback(true)
-    }, [])
+    }, [config.Title, config.Subtitle])
 
     return (
         <div className={`pt-3 pb-2 px-2 px-xl-3 bg-white ${config.frameYN && config.frameYN.toLowerCase() == 'yes' ? "border" : "" }`}>

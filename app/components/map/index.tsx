@@ -28,7 +28,7 @@ import { parseDataExpr } from '@/app/utils/parseDataExpr';
 import {interpolateBlues, interpolateGreens, interpolateGreys, interpolateOranges, interpolatePurples, interpolateReds, interpolateBrBG, interpolatePRGn, interpolatePiYG, interpolatePuOr, interpolateRdGy, interpolateRdYlBu, interpolateRdYlGn, interpolateSpectral, interpolateTurbo, interpolateViridis } from 'd3-scale-chromatic';
 import Control from 'ol/control/Control';
 
-const MapComponent = ({config, loadedCallback} : {config: any, loadedCallback: any}) => {
+const MapComponent = ({config} : {config: any}) => {
   // set intial state - used to track references to OpenLayers 
   //  objects for use in hooks, event handlers, etc.
   const [ map, setMap ] = useState<Map>()

@@ -1,5 +1,3 @@
-import { revalidateTag } from "next/cache"
-
 /**
  * Load list of dashboard from Github Gist
  * @returns array of dashboards
@@ -35,8 +33,6 @@ export const loadAllYamlFromGists = async () => {
  * @returns raw text of dashboard.*.yaml
  */
 export const loadOneYamlFromGists = async (DashID: string) => {
-    // Revalidate cache (reload gists directly from Github)
-    revalidateTag('gists')
     // Load all gists from authenticated user
     const gistjson = await loadUserGists()
     if (!gistjson.length) {
@@ -74,9 +70,9 @@ export const loadUserGists = async () => {
                 'Authorization': `token ${process.env.GIST_TOKEN}`
             },
             next: {
-                tags: ['gists'],
-                revalidate: 60 // revalidate cache every 1 minute
-            }
+                tags: ['dashboards']
+            },
+            // cache: 'no-store' // do not cache request
         })
         return await gist.json()
     }

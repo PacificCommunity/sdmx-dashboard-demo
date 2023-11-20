@@ -1,14 +1,18 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
+import { useRouter } from "next/navigation";
 
 import { confirmAlert } from 'react-confirm-alert'
 
 import { Trash } from 'react-bootstrap-icons'
+import Spinner from 'react-bootstrap/Spinner';
 
 import './styles.custom.css'
 
 const DeleteButton = ({ uri }: { uri: string }) => {
+
+    const [btnState, setBtnState] = useState(true);
 
     const confirmDelete = () => {
         confirmAlert({
@@ -17,7 +21,7 @@ const DeleteButton = ({ uri }: { uri: string }) => {
             buttons: [
                 {
                     label: 'Yes, delete it!',
-                    className: 'btn btn-danger',
+                    className: 'btn btn-danger' + (btnState ? '' : 'disabled'),
                     onClick: () => onConfirm()
                 },
                 {
@@ -29,6 +33,7 @@ const DeleteButton = ({ uri }: { uri: string }) => {
     }
 
     const onConfirm = async () => {
+        setBtnState(false);
         await deleteDashboard(uri)
     }
 
@@ -41,15 +46,19 @@ const DeleteButton = ({ uri }: { uri: string }) => {
         })
         if (response.status === 200) {
             window.location.reload()
+        } else {
+            alert('Could not delete dashboard');
         }
     }
 
     return (
         <button
-            className='btn btn-danger btn-sm float-end'
+            className={`btn btn-danger btn-sm float-end ${btnState ? '' : 'disabled'}`}
             onClick={confirmDelete}
         >
-            <Trash />
+            {btnState ? <Trash /> : <Spinner animation="border" role="status" size="sm">
+                <span className="visually-hidden">Deleting...</span>
+            </Spinner>}
         </button>
     )
 

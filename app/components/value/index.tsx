@@ -5,7 +5,7 @@ import { SDMXParser } from 'sdmx-json-parser';
 import { parseDataExpr } from "@/app/utils/parseDataExpr";
 import { format } from "path";
 
-const Value = ({ config, loadedCallback }: {config: any, loadedCallback: any}) => {
+const Value = ({ config }: {config: any}) => {
 
     const [titleObject, setTitleObject] = useState<any>({ text: "Loading..." })
     const [subTitleObject, setSubTitleObject] = useState<any>({ text: "Loading..." })
@@ -76,8 +76,6 @@ const Value = ({ config, loadedCallback }: {config: any, loadedCallback: any}) =
             } else {
                 setValueStr(formatValue(valueStr, config, data, attributes));
             }
-
-            loadedCallback(true)
         });
     }, []);
 
