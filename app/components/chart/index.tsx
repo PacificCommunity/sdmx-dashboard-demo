@@ -111,7 +111,7 @@ const Chart = ({config} : {config: any}) => {
                         data.forEach((dataItem: any, index: number, data: [any]) => {
                             data[index].value = eval(`${data[index].value} ${dataObj.operator} ${operandValue}`);
                         });
-                        return [data, parser.getRawDimensions()];
+                        return [data, parser.getDimensions()];
                     } else {
                         // operand is another SDMX request
                         const parserOperand = new SDMXParser();
@@ -125,11 +125,11 @@ const Chart = ({config} : {config: any}) => {
                             data.forEach((dataItem: any, index: number, data: [any]) => {
                                 data[index].value = eval(`${data[index].value} ${dataObj.operator} ${operandValue}`);
                             });
-                            return [data, parser.getRawDimensions()];
+                            return [data, parser.getDimensions()];
                         });
                     }
                 } else {
-                    return [data, parser.getRawDimensions()];
+                    return [data, parser.getDimensions()];
                 }
             })
         });
