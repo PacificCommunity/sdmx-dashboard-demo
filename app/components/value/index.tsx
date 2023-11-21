@@ -42,7 +42,7 @@ const Value = ({ config }: {config: any}) => {
             })
         }).then(() => {
             const data = sdmxParser.getData();
-            const dimensions = sdmxParser.getRawDimensions();
+            const dimensions = sdmxParser.getDimensions();
             const attributes = sdmxParser.getAttributes();
 
             const titleObj = parseTextExpr(config.Title, dimensions);

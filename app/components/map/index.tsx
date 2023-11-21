@@ -221,7 +221,7 @@ const MapComponent = ({config} : {config: any}) => {
         })
     }).then(() => {
       const data = sdmxParser.getData();
-      const dimensions = sdmxParser.getRawDimensions();
+      const dimensions = sdmxParser.getDimensions();
       const attributes = sdmxParser.getAttributes();
       initialMap.on('pointermove', (evt: MapBrowserEvent<UIEvent>) => {
         if (evt.dragging) {
