@@ -1,0 +1,49 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "dashboard.text.schema.json",
+    "type": ["string", "object"],
+    "properties": {
+        "text": {
+            "description": "The text expressed in different languages",
+            "type": ["object", "string"],
+            "propertyNames": {
+                "pattern": "[a-z][a-z]"
+            }
+        },
+        "color": {
+            "description": "The color of the title",
+            "type": "string"
+        },
+        "size": {
+            "description": "The size of the title",
+            "type": "string"
+        },
+        "font": {
+            "description": "The font of the title",
+            "type": "string"
+        },
+        "align": {
+            "description": "The alignment of the title",
+            "type": "string",
+            "enum": [
+                "left",
+                "center",
+                "right"
+            ]
+        },
+        "weight": {
+            "description": "The weight of the title",
+            "type": "string",
+            "enum": [
+                "normal",
+                "bold",
+                "bolder",
+                "lighter"
+            ]
+        },
+        "italic": {
+            "description": "The italicness of the title",
+            "type": "boolean"
+        }
+    }
+}
