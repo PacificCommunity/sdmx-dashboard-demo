@@ -1,0 +1,175 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "dashboard.schema.json",
+    "title": "Dasboard configuration",
+    "description": "Configuration for the dashboard",
+    "type": "object",
+    "properties": {
+        "id": {
+            "description": "The unique identifier of the dashboard",
+            "type": "string"
+        },
+        "header": {
+            "description": "The header of the dashboard",
+            "type": ["string", "object"],
+            "properties": {
+                "title": {
+                    "description": "The title of the dashboard",
+                    "$ref": "dashboard.text.schema.json"
+                },
+                "subtitle": {
+                    "description": "The subtitle of the dashboard",
+                    "$ref": "dashboard.text.schema.json"
+                }
+            }
+        },
+        "footer": {
+            "description": "The footer of the dashboard",
+            "type": ["string", "object"],
+            "properties": {
+                "title": {
+                    "description": "The title of the dashboard",
+                    "$ref": "dashboard.text.schema.json"
+                },
+                "subtitle": {
+                    "description": "The subtitle of the dashboard",
+                    "$ref": "dashboard.text.schema.json"
+                }
+            }
+        },
+        "rows": {
+            "description": "A row matching the bootstrap grid layout",
+            "type": "array",
+            "items": {
+                "description": "A column",
+                "type": "object",
+                "properties": {
+                    "columns": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "description": "The id of the cell",
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "description": "The type of chart to display in the cell",
+                                    "type": "string",
+                                    "enum": [
+                                        "line",
+                                        "bar",
+                                        "pie",
+                                        "column",
+                                        "value",
+                                        "drilldown",
+                                        "map"
+                                    ]
+                                },
+                                "bootstrapCol": {
+                                    "description": "The bootstrap grid ratio for the col (4, 6, ...)",
+                                    "type": "number",
+                                    "default": 6
+                                },
+                                "title": {
+                                    "description": "The title of the cell",
+                                    "$ref": "dashboard.text.schema.json"
+                                },
+                                "subtitle": {
+                                    "description": "The title of the cell",
+                                    "$ref": "dashboard.text.schema.json"
+                                },
+                                "note": {
+                                    "description": "The title of the cell",
+                                    "$ref": "dashboard.text.schema.json"
+                                },
+                                "unit": {
+                                    "description": "The unit of the values in the cell",
+                                    "type" : ["string", "object"],
+                                    "properties": {
+                                        "text": {
+                                            "description": "The text of the unit",
+                                            "$ref": "dashboard.text.schema.json"
+                                        },
+                                        "location": {
+                                            "description": "The location of the unit ",
+                                            "type": "string",
+                                            "enum": [
+                                                "prefix",
+                                                "suffix",
+                                                "under"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "decimals": {
+                                    "description": "The number of decimals to display",
+                                    "type": ["string", "integer"],
+                                    "minimum": 0,
+                                    "maximum": 10
+                                },
+                                "displayLabels": {
+                                    "description": "Whether to display labels on the chart",
+                                    "type": "boolean"
+                                },
+                                "legend": {
+                                    "description": "The legend on the chart",
+                                    "type": "object",
+                                    "properties": {
+                                        "concept": {
+                                            "description": "The SDMX concept to use for the legend",
+                                            "type": "string"
+                                        },
+                                        "location": {
+                                            "description": "The location of the unit ",
+                                            "type": "string",
+                                            "enum": [
+                                                "top",
+                                                "bottom",
+                                                "right",
+                                                "left",
+                                                "none"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "xAxisConcept": {
+                                    "description": "The SDMX concept to use for the x-axis",
+                                    "type": "string"
+                                },
+                                "yAxisConcept": {
+                                    "description": "The SDMX concept to use for the y-axis",
+                                    "type": "string"
+                                },
+                                "download": {
+                                    "description": "Whether to display a download button",
+                                    "type": "boolean"
+                                },
+                                "datalink" : {
+                                    "description": "The link to the data",
+                                    "type": "string"
+                                },
+                                "metadatalink": {
+                                    "description": "The link to the metadata",
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "description": "The data to display in the cell",
+                                    "type": ["string", "array"],
+                                    "items": {
+                                        "description": "An access to a data set",
+                                        "type": "string" 
+                                    }
+                                }
+                            },
+                            "required": ["type", "data"]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "required": ["rows", "id"]
+
+
+}
