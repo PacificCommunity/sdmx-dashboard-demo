@@ -15,7 +15,7 @@ async function Home() {
       <div className="container-fluid mt-5 mt-sm-0">
         <div className="p-1 p-md-3">
           <h1>Welcome</h1>
-          <p>Generate SDMX dashboards from YAML definition files.</p>
+          <p>Manage SDMX dashboard config files.</p>
           <div className="list-group list-group-flush">
             {
               (data.length > 0 ?

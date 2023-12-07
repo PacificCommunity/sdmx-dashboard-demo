@@ -1,6 +1,7 @@
 import fs, { promises as fsp } from "fs";
 import path from "path";
 import { loadAllYamlFromGists } from "@/app/utils/loadYamlFromGists";
+import getServerHostName from "@/app/utils/getServerHostName";
 
 export const loadDashboards = async () => {
 
@@ -32,6 +33,7 @@ export const loadDashboards = async () => {
                             .replace('-', ' '),
                         date: stats.mtime,
                         uri: name.split('.')[0],
+                        raw: getServerHostName() + '/uploads/' + name
                     };
                 });
             return yamlfiles
