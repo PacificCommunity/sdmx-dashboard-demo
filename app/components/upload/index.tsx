@@ -12,17 +12,15 @@ const UploadDropzone = () => {
 
   const { acceptedFiles, fileRejections, getRootProps, getInputProps } = useDropzone({
     accept: {
-      'text/plain': ['.yaml', '.yml', '.json'],
+      'text/plain': ['.json'],
       'application/json': ['.json'],
-      'application/x-yaml': ['.yaml', '.yml'],
-      'text/yaml': ['.yaml', '.yml']
     },
     onDropAccepted: files => {
       files.forEach(async file => {
         try {
           // Upload file to server using upload API
           let formData = new FormData();
-          formData.append("yamlfile", file);
+          formData.append("configfile", file);
 
           const res = await fetch("/api/config", {
             method: "POST",
@@ -70,13 +68,17 @@ const UploadDropzone = () => {
               </li>
             ))}
           </ul>
-          <a
-            href='/'
-            className='btn btn-primary'
-          >Go back to home page</a>
         </div>
-      ) : null}
-    </section>
+      ) : (
+        null
+      )}
+      <div className="mt-3">
+        <a
+          href="/"
+          className={`btn ${acceptedFiles.length > 0 ? 'btn-primary' : 'btn-secondary'}`}
+        >Back to home page</a>
+      </div>
+    </section >
   )
 
 }

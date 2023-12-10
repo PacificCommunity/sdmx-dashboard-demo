@@ -11,7 +11,10 @@
         },
         "header": {
             "description": "The header of the dashboard",
-            "type": ["string", "object"],
+            "type": [
+                "string",
+                "object"
+            ],
             "properties": {
                 "title": {
                     "description": "The title of the dashboard",
@@ -25,7 +28,10 @@
         },
         "footer": {
             "description": "The footer of the dashboard",
-            "type": ["string", "object"],
+            "type": [
+                "string",
+                "object"
+            ],
             "properties": {
                 "title": {
                     "description": "The title of the dashboard",
@@ -85,7 +91,10 @@
                                 },
                                 "unit": {
                                     "description": "The unit of the values in the cell",
-                                    "type" : ["string", "object"],
+                                    "type": [
+                                        "string",
+                                        "object"
+                                    ],
                                     "properties": {
                                         "text": {
                                             "description": "The text of the unit",
@@ -104,7 +113,10 @@
                                 },
                                 "decimals": {
                                     "description": "The number of decimals to display",
-                                    "type": ["string", "integer"],
+                                    "type": [
+                                        "string",
+                                        "integer"
+                                    ],
                                     "minimum": 0,
                                     "maximum": 10
                                 },
@@ -145,7 +157,7 @@
                                     "description": "Whether to display a download button",
                                     "type": "boolean"
                                 },
-                                "datalink" : {
+                                "datalink": {
                                     "description": "The link to the data",
                                     "type": "string"
                                 },
@@ -155,21 +167,28 @@
                                 },
                                 "data": {
                                     "description": "The data to display in the cell",
-                                    "type": ["string", "array"],
+                                    "type": [
+                                        "string",
+                                        "array"
+                                    ],
                                     "items": {
                                         "description": "An access to a data set",
-                                        "type": "string" 
+                                        "type": "string"
                                     }
                                 }
                             },
-                            "required": ["type", "data"]
+                            "required": [
+                                "type",
+                                "data"
+                            ]
                         }
                     }
                 }
             }
         }
     },
-    "required": ["rows", "id"]
-
-
+    "required": [
+        "rows",
+        "id"
+    ]
 }

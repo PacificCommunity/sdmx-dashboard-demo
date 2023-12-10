@@ -1,7 +1,7 @@
-// create gist object to save ymlstring, using GIST_TOKEN to authenticate, and GIST_PUBLIC to set public/private
+// create gist object to save config string, using GIST_TOKEN to authenticate, and GIST_PUBLIC to set public/private
 // return gist object
-export const saveYmlAsGist = async (dashID: string, ymlstring: string, notprivate: boolean) => {
-    const filename = `dashboard.${dashID}.yaml`;
+export const saveConfigAsGist = async (dashID: string, configstring: string, notprivate: boolean) => {
+    const filename = `dashboard.${dashID}.json`;
     let data = {};
     const gist = await fetch('https://api.github.com/gists', {
         method: 'POST',
@@ -11,7 +11,7 @@ export const saveYmlAsGist = async (dashID: string, ymlstring: string, notprivat
             files: {
                 ...data,
                 [filename]: {
-                    content: ymlstring
+                    content: configstring
                 }
             }
         }),

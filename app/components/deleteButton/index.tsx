@@ -38,7 +38,7 @@ const DeleteButton = ({ uri }: { uri: string }) => {
     }
 
     const deleteDashboard = async (uri: string) => {
-        const response = await fetch(`/api/yaml/${uri}`, {
+        const response = await fetch(`/api/config/${uri}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'

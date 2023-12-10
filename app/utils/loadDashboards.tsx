@@ -1,6 +1,6 @@
 import fs, { promises as fsp } from "fs";
 import path from "path";
-import { loadAllYamlFromGists } from "@/app/utils/loadYamlFromGists";
+import { loadAllJsonFromGists } from "@/app/utils/loadJsonFromGists";
 import getServerHostName from "@/app/utils/getServerHostName";
 
 export const loadDashboards = async () => {
@@ -9,7 +9,7 @@ export const loadDashboards = async () => {
 
     if (process.env.GIST_TOKEN) {
         // Option 1: Load from Github Gist
-        const data = await loadAllYamlFromGists()
+        const data = await loadAllJsonFromGists()
         if (data === false) {
             return {}
         } else {
@@ -21,9 +21,9 @@ export const loadDashboards = async () => {
 
             const filenames = fs.readdirSync(configFolderPath);
 
-            const yamlfiles = filenames
-                // filter out non yaml files
-                .filter(filename => filename.endsWith(".yaml"))
+            const jsonfiles = filenames
+                // filter out non JSON files
+                .filter(filename => filename.endsWith(".json"))
                 // create object with human readable name and real file name
                 .map((name) => {
                     const stats = fs.statSync(`${configFolderPath}/${name}`)
@@ -36,7 +36,7 @@ export const loadDashboards = async () => {
                         raw: getServerHostName() + '/uploads/' + name
                     };
                 });
-            return yamlfiles
+            return jsonfiles
         }
         catch (error) {
             console.error(error)

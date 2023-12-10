@@ -1,7 +1,7 @@
 import { type } from "os";
 
 /**
- * Process the "DATA" expression provided in yaml.
+ * Process the "DATA" expression provided in JSON.
  * Example: 'https://www.ilo.org/sdmx/rest/data/ILO,DF_EES_TEES_SEX_MJH_NB,1.0/CHL.A..SEX_T.MJH_AGGREGATE_MULTI?endPeriod=2022&lastNObservations=1 * {UNIT_MULT}',
  * 
  * @todo Review style parsing method as it is not limited to 5 params only:
@@ -15,15 +15,15 @@ import { type } from "os";
  */
 export const parseDataExpr = (dataExprs: [string]) => {
 
-  if(typeof dataExprs === 'string') {
+  if (typeof dataExprs === 'string') {
     dataExprs = [dataExprs];
   }
 
   // define return object
-  let results : any[] = [];
+  let results: any[] = [];
 
   dataExprs.forEach((dataExpr: string) => {
-    let parsedExpr : any = {
+    let parsedExpr: any = {
       'dataFlowUrl': [],
     };
 
@@ -55,7 +55,7 @@ export const parseDataExpr = (dataExprs: [string]) => {
       parsedExpr['geojsonProjection'] = tokensMap[1].split(', ')[1]
       parsedExpr['geojsonKey'] = tokensMap[1].split(', ')[2].trim().replace(/[\{\}]+/g, '')
     }
-    
+
     results.push(parsedExpr);
   });
 

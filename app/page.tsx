@@ -32,7 +32,7 @@ async function Home() {
                       </Link>
                       <DeleteButton uri={item.uri} />
                       <Link
-                        href={`/api/yaml/${item.uri}`}
+                        href={`/api/config/${item.uri}`}
                         target='_blank'
                         className='btn btn-info btn-sm float-end me-2'
                         prefetch={false}
@@ -42,15 +42,18 @@ async function Home() {
                     </div>
                   ))
                 ) : (
-                  <div className="list-group-item text-center py-4 text-muted"><SlashCircle className="me-2" />No YAML file found</div>
+                  <div className="list-group-item text-center py-4 text-muted"><SlashCircle className="me-2" />No dashboard configuration file found</div>
                 )
               )
             }
+          </div>
+          <div className='px-1 py-3'>
             <Link
               href='/upload'
-              className='list-group-item list-group-item-action p-3'
+              className='btn btn-light'
             >
               <PlusCircleDotted className="me-2" />Upload new file
+              {process.env.GIST_TOKEN ? ' to Github Gists' : ' to server'}
             </Link>
           </div>
         </div>

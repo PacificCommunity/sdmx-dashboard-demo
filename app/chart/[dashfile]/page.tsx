@@ -19,14 +19,13 @@ export default async function Page({ params }: { params: { dashfile: string } })
                         <h2>{params.dashfile} dashboard</h2>
                         {dashfound ? (
                             <>
-                                <p className="text-success">Dashboard config found</p>
                                 <p>Last update: {dashfound.date.toString()}</p>
-                                <p>Link to config file: <a href="{dashfound.raw}" target="_blank">{dashfound.raw}</a></p>
+                                <p>Link to config file: <a href={`${dashfound.raw}`} target="_blank">{dashfound.raw}</a></p>
                                 <h4>HTML</h4>
                                 <pre>
                                     &lt;div
-                                    class="sdmx-dashboard-react"
-                                    data-url="{dashfound.raw}"&gt;&lt;/div&gt;
+                                    class=&quot;sdmx-dashboard-react&quot;
+                                    data-url=&quot;{dashfound.raw}&quot;&gt;&lt;/div&gt;
                                 </pre>
                                 <h4>React</h4>
                                 <pre>
@@ -38,8 +37,7 @@ export default async function Page({ params }: { params: { dashfile: string } })
                         )}
                     </div>
                 </div>
-            </div>
-
+            </div >
         </>
     )
 

@@ -1,5 +1,6 @@
 import { NextPage } from 'next'
 import UploadDropzone from '@/app/components/upload'
+import Link from 'next/link';
 
 const Upload: NextPage = () => {
 
@@ -9,7 +10,7 @@ const Upload: NextPage = () => {
         <div className="row justify-content-center my-4">
           <div className="col col-sm-auto">
             <h1>Upload</h1>
-            <p>Upload new config files below.<br />JSON and YAML formats accepted.</p>
+            <p>Upload new config files below.<br />Accepting JSON files based on <Link href="/schema/dashboard.schema.json" target="_blank" prefetch={false}>JSON schema</Link></p>
             <UploadDropzone />
           </div>
         </div>

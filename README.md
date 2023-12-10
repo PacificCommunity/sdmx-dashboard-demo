@@ -1,7 +1,7 @@
-# Dashboard generator
+# SDMX Dashboards manager
 
-This webapp displays dashboards according to configuration
-provided by YAML files uploaded by end users.
+Manage your dashboard config files (JSON format) and preview dashboards
+using the [sdmx-dashboard-react](https://github.com/stanozr/sdmx-dashboard-react) client application.
 
 ## Online demo
 
@@ -11,9 +11,9 @@ https://dashboard-creator-thhomas-projects.vercel.app/
 
 ## Configuration
 
-By default YAML files are saved in local file system (in `./public/uploads/` folder)
+By default JSON files are saved in local file system (in `./public/uploads/` folder)
 
-To store YAML files as Github Gists, add 2 environment variables  
+To store JSON files as Github Gists, add 2 environment variables  
 (in .env.local for instance)
 
 ```
@@ -49,7 +49,7 @@ This application uses SDMX-JSON format for the data (version 2) provided by the 
 It is built upon NextJS with [SDMX-JSON Parser](https://pacificcommunity.github.io/sdmx-json-parser/), [Highcharts](https://www.highcharts.com/) and [OpenLayers](https://openlayers.org/).
 
 
-New types of charts have been added. The specification of the related YAML sections is provided below:
+New types of charts have been added. The specification of the related JSON sections is provided below:
 
 1. Drilldown
 
@@ -62,27 +62,6 @@ In case this dimension is `TIME_PERIOD`, it will displayed as a line chart. Othe
 
 When using the `TIME_PERIOD` dimension, the main view present the latest value available, while the value `Total` (`_T`) will be used for other kind of dimension.
 
-
-```yaml
--
-    Row: 1
-    chartType: DRILLDOWN, double
-    Title:  "Household Expenditure"
-    Subtitle:  "{$TIME_PERIOD}"
-    Unit:
-    unitLoc: SUFFIX
-    Decimals: "{$DECIMALS}"
-    LabelsYN: No
-    legendConcept: GEO_PICT
-    legendLoc: 
-    xAxisConcept: COMMODITY 
-    yAxisConcept: 
-    downloadYN: 
-    dataLink: 
-    metadataLink: 
-    DATA: "https://stats-sdmx-disseminate.pacificdata.org/rest/data/SPC,DF_HHEXP,1.0/A..HHEXP._T._T.10+11+12+01+02+03+04+05+06+07+08+09+_T.USD?startPeriod=2013&endPeriod=2021&lastNObservations=1&dimensionAtObservation=AllDimensions"
-    
-```
 
 
 2. Map
@@ -102,23 +81,3 @@ SDMX_URL, {GEO_DIMENSION_ID} | GEOJSON_URL, EPSG_CODE, {GEO_ATTRIBUTE}
 - GEO_ATTRIBUTE: name of the attribute holding a reference to the geometry (value of this attribute must be equal to the SDMX dimension id value). 
 
 The `legendConcept` dimension name is displayed in the tooltip. This holds the description of the data (usually is set to 'MEASURE', 'INDICATOR', ...)
-
-```yaml
--
-    Row: 1
-    chartType: MAP, double
-    Title:  "Inflation rate"
-    Subtitle:  "{$TIME_PERIOD}"
-    Unit:
-    unitLoc: SUFFIX
-    Decimals: "{$DECIMALS}"
-    LabelsYN: No
-    legendConcept: INDICATOR
-    legendLoc: 
-    xAxisConcept:
-    yAxisConcept: OBS_VALUE 
-    downloadYN: 
-    dataLink: 
-    metadataLink: 
-    DATA: "https://stats-sdmx-disseminate.pacificdata.org/rest/data/SPC,DF_CPI,3.0/A..INF.?startPeriod=2011&lastNObservations=1&dimensionAtObservation=AllDimensions, {GEO_PICT} | https://www.spc.int/modules/contrib/spc_dot_stat_data/modules/spc_dot_stat_map/maps/eez.json, EPSG:3832, {id}"
-```

@@ -1,7 +1,7 @@
 import { text } from "stream/consumers";
 
 /**
- * Process the "Title" expression provided in yaml.
+ * Process the "Title" expression provided in JSON.
  * Example: 'Status in employment {$TIME_PERIOD}, [DIN, 14, Bold, Italics, LEFT]',
  * 
  * @todo Review style parsing method as it is not limited to 5 params only:
@@ -17,7 +17,7 @@ import { text } from "stream/consumers";
 export const parseTextExpr = (titleExpr: string, dimensions: any[]) => {
 
   // define return object
-  let result : {
+  let result: {
     text: string,           // cleaned up and parsed text
     bootstrapcss: string[], // bootstrap classname used in title component
     inlinecss: {            // inline css used in title component (font-size)
@@ -53,7 +53,7 @@ export const parseTextExpr = (titleExpr: string, dimensions: any[]) => {
       // replace {VARIABLE} with id
       valueAttribute = 'id'
     }
-    const dimension = dimensions.find((item : any) => item.id === p1);
+    const dimension = dimensions.find((item: any) => item.id === p1);
     if (!dimension) {
       console.warn(`Dimension with id ${p1} not found`);
       return match;
@@ -86,7 +86,7 @@ export const parseTextExpr = (titleExpr: string, dimensions: any[]) => {
           }
         } else {
           // we return a comma separated list of values
-          return dimension.values.map((item : any) => item[valueAttribute]).join(', ');
+          return dimension.values.map((item: any) => item[valueAttribute]).join(', ');
         }
       } else {
         // we return the value
@@ -153,7 +153,7 @@ export const parseTextExpr = (titleExpr: string, dimensions: any[]) => {
 
 }
 
-export const parseOperandTextExpr = (operandExpr: string, data : any, attributes: any[]) => {
+export const parseOperandTextExpr = (operandExpr: string, data: any, attributes: any[]) => {
 
   const textWithValues = String(operandExpr).replace(/\{(.*?)\}/g, (match, p1) => {
     let valueAttribute = 'name';
@@ -164,11 +164,11 @@ export const parseOperandTextExpr = (operandExpr: string, data : any, attributes
       // replace {VARIABLE} with id
       valueAttribute = 'id'
     }
-    const attribute = attributes.find((item : any) => item.id === p1);
+    const attribute = attributes.find((item: any) => item.id === p1);
     if (!attribute) {
       throw new Error(`Attribute with id ${p1} not found`);
     } else {
-      const value = attribute.values.find((item : any) => item.name === data[attribute.id]);
+      const value = attribute.values.find((item: any) => item.name === data[attribute.id]);
       if (value) {
         if (attribute.id === 'UNIT_MULT') {
           return Math.pow(10, parseInt(value[valueAttribute]));
