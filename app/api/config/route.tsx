@@ -10,6 +10,7 @@ import { loadDashboards } from '@/app/utils/loadDashboards'
 import { revalidateTag, revalidatePath } from "next/cache";
 
 const configFolderPath = path.join(process.cwd(), "/public/uploads");
+const schemaFolderPath = path.join(process.cwd(), "/public/schema");
 
 /**
  * Load list of config files from uploads folder or Github Gist
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
             const jsonobj = JSON.parse(jsonstring);
 
             // Load JSON schema from file
-            const output = await validate("./public/schema/dashboard.schema.json", jsonobj)
+            const output = await validate(`${schemaFolderPath}/dashboard.schema.json`, jsonobj)
             if (!output.valid) {
                 throw new Error("Invalid JSON file: not matching the schema")
             }
