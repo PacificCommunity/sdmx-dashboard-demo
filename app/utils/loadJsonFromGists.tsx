@@ -2,17 +2,17 @@
  * Load list of dashboard from Github Gist
  * @returns array of dashboards
  */
-export const loadAllYamlFromGists = async () => {
+export const loadAllJsonFromGists = async () => {
     const gistjson = await loadUserGists()
     if (!gistjson.length) {
         return {} // nothing found
     }
     // Reaching this point means we got a result from the Github API
     return gistjson
-        // Filter out by file name not matching dashboard.*.yaml
-        .filter((item: any) => Object.keys(item.files)[0].startsWith("dashboard.") && Object.keys(item.files)[0].endsWith(".yaml"))
+        // Filter out by file name not matching dashboard.*.json
+        .filter((item: any) => Object.keys(item.files)[0].startsWith("dashboard.") && Object.keys(item.files)[0].endsWith(".json"))
         // Map results to object with human readable name, update date, and raw url
-        .map((item : any) => {
+        .map((item: any) => {
             const stats = item.updated_at
             const filename = Object.keys(item.files)[0]
             return {
@@ -28,23 +28,23 @@ export const loadAllYamlFromGists = async () => {
 
 
 /**
- * Load a single YAML file from Github Gist
+ * Load a single JSON file from Github Gist
  * @param DashID ID of the dashboard to load
- * @returns raw text of dashboard.*.yaml
+ * @returns raw text of dashboard.*.json
  */
-export const loadOneYamlFromGists = async (DashID: string) => {
+export const loadOneJsonFromGists = async (DashID: string) => {
     // Load all gists from authenticated user
     const gistjson = await loadUserGists()
     if (!gistjson.length) {
         return undefined // nothing found
     }
     // Reaching this point means we got a result from the Github API
-    // Filter out by file name not matching dashboard.<DashID>.yaml
-    const yamlfiles = gistjson
-        .filter((item : any) => Object.keys(item.files)[0] === `dashboard.${DashID}.yaml`)
+    // Filter out by file name not matching dashboard.<DashID>.json
+    const jsonfiles = gistjson
+        .filter((item: any) => Object.keys(item.files)[0] === `dashboard.${DashID}.json`)
 
-    // return raw text of dashboard.*.yaml from Gist by fetching raw url from Github API
-    const response = await fetch(yamlfiles[0].files[`dashboard.${DashID}.yaml`].raw_url, {
+    // return raw text of dashboard.*.json from Gist by fetching raw url from Github API
+    const response = await fetch(jsonfiles[0].files[`dashboard.${DashID}.json`].raw_url, {
         method: 'GET',
         headers: {
             'Accept': 'text/plain',
@@ -52,7 +52,7 @@ export const loadOneYamlFromGists = async (DashID: string) => {
         },
         cache: 'no-store' // do not cache request
     })
-    return response.text()
+    return response.json()
 }
 
 

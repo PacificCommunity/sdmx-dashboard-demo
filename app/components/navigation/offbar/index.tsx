@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { SlashCircle, ClipboardData, PlusCircleDotted } from 'react-bootstrap-icons';
 
-const Offbar = ({dashboards}: any) => {
+const Offbar = ({ dashboards }: any) => {
 
     const [show, setShow] = useState(false);
     const [sideLoading, setSideLoading] = useState(true)
@@ -59,7 +59,7 @@ const Offbar = ({dashboards}: any) => {
                                         </Link>
                                     ))
                                 ) : (
-                                    <div className="list-group-item text-center py-4 text-muted"><SlashCircle className="me-2" />No YAML file found</div>
+                                    <div className="list-group-item text-center py-4 text-muted"><SlashCircle className="me-2" />No JSON file found</div>
                                 )
                             )
                         }
