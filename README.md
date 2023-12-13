@@ -21,6 +21,11 @@ GIST_TOKEN=<your_github_token>
 GIST_PUBLIC=false
 ```
 
+## How to define your dashboard
+
+A guide on how to write a JSON configuration file is available in [here](./public/doc.md)
+
+
 ## Running the development server
 
 ```bash
@@ -42,42 +47,3 @@ docker build -t dashboard-creator .
 docker run -p 3000:3000 dashboard-creator
 ```
 
-## General documentation
-
-This application uses SDMX-JSON format for the data (version 2) provided by the [sdmx-json-parser library](https://pacificcommunity.github.io/sdmx-json-parser/).
-
-It is built upon NextJS with [SDMX-JSON Parser](https://pacificcommunity.github.io/sdmx-json-parser/), [Highcharts](https://www.highcharts.com/) and [OpenLayers](https://openlayers.org/).
-
-
-New types of charts have been added. The specification of the related JSON sections is provided below:
-
-1. Drilldown
-
-Drilldown chart make use of multi-dimensional datasets displaying a single value for each category in columns and a disagreggated serie of observations for each category by another dimension.
-
-`legendConcept` holds the dimension displayed on the main map and `xAxisConcept` holds the dimension name used for the drilled-down view.
-
-Clicking on a column will then drill down data by second dimension.
-In case this dimension is `TIME_PERIOD`, it will displayed as a line chart. Other diumension will be displayed as column chart again.
-
-When using the `TIME_PERIOD` dimension, the main view present the latest value available, while the value `Total` (`_T`) will be used for other kind of dimension.
-
-
-
-2. Map
-
-
-In order to display some observation on a map, we need to associate them to geometries. It means that we need a source for geometries and an association as associated keys matching a dimension of the SDMX dataset and an attribute of the GIS file.
-GeoJSON is the only implemented format for GIS files.
-The project of the GIS file must be specified. All these information are provided in the `DATA` field.
-The syntax of the `DATA` field is as follow:
-
-SDMX_URL, {GEO_DIMENSION_ID} | GEOJSON_URL, EPSG_CODE, {GEO_ATTRIBUTE}
-
-- SDMX_URL : the URL to the SDMX dataset
-- GEO_DIMENSION_ID: id of the dimension holding reference to the area of application
-- GEOJSON_URL: a URL to a GeoJSON file holding the geometries
-- EPSG_CODE: the projection code (eg. 'EPSG:4326')
-- GEO_ATTRIBUTE: name of the attribute holding a reference to the geometry (value of this attribute must be equal to the SDMX dimension id value). 
-
-The `legendConcept` dimension name is displayed in the tooltip. This holds the description of the data (usually is set to 'MEASURE', 'INDICATOR', ...)
