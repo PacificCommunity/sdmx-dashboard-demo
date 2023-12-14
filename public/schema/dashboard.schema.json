@@ -9,8 +9,37 @@
             "description": "The unique identifier of the dashboard",
             "type": "string"
         },
+        "languages": {
+            "description": "The available languages for the dashboard",
+            "type": "array",
+            "items": {
+                "description": "A language",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The id of the language",
+                        "type": "string"
+                    },
+                    "label": {
+                        "description": "The label of the language",
+                        "type": "string"
+                    }
+                }
+            },
+            "default": [
+                {
+                    "id": "en",
+                    "label": "English"
+                }
+            ]
+        },
+        "colCount": {
+            "description": "The number of columns in the dashboard",
+            "type": "number",
+            "default": 3
+        },
         "header": {
-            "description": "The header of the dashboard",
+            "description": "The header of the dashboard. If only string provided, it will be used as the text of the header",
             "type": [
                 "string",
                 "object"
@@ -27,7 +56,7 @@
             }
         },
         "footer": {
-            "description": "The footer of the dashboard",
+            "description": "The footer of the dashboard. If only string provided, it will be used as the text of the footer",
             "type": [
                 "string",
                 "object"
@@ -59,6 +88,13 @@
                                     "description": "The id of the cell",
                                     "type": "string"
                                 },
+                                "colorScheme": {
+                                    "description": "The color scheme of the chart in case of map",
+                                    "type": "string",
+                                    "enum": [
+                                        "Blues", "BrBg", "Greens", "Greys", "Oranges", "PRGn", "PiYG", "PuOr", "Purples", "RdGy", "RdYlBu", "RdYlGn", "Reds", "Spectral", "Turbo", "Viridis"
+                                    ]
+                                },
                                 "type": {
                                     "description": "The type of chart to display in the cell",
                                     "type": "string",
@@ -69,13 +105,14 @@
                                         "column",
                                         "value",
                                         "drilldown",
+                                        "note",
                                         "map"
                                     ]
                                 },
-                                "bootstrapCol": {
-                                    "description": "The bootstrap grid ratio for the col (4, 6, ...)",
+                                "colSize": {
+                                    "description": "The number of columns the cell should take in the row",
                                     "type": "number",
-                                    "default": 6
+                                    "default": 1
                                 },
                                 "title": {
                                     "description": "The title of the cell",
@@ -86,7 +123,7 @@
                                     "$ref": "dashboard.text.schema.json"
                                 },
                                 "note": {
-                                    "description": "The title of the cell",
+                                    "description": "A note with a text",
                                     "$ref": "dashboard.text.schema.json"
                                 },
                                 "unit": {
@@ -166,21 +203,31 @@
                                     "type": "string"
                                 },
                                 "data": {
-                                    "description": "The data to display in the cell",
+                                    "description": "The data to display in the cell. Can be a single or multiple data sets.",
                                     "type": [
                                         "string",
                                         "array"
                                     ],
                                     "items": {
-                                        "description": "An access to a data set",
+                                        "description": "An access to a data set. Can be a simple SDMX URL or an expression.",
                                         "type": "string"
                                     }
                                 }
                             },
                             "required": [
-                                "type",
-                                "data"
-                            ]
+                                "type"
+                            ],
+                            "if": {
+                                "not": {
+                                    "properties": {
+                                        "type": { "const": "note" }
+                                    },
+                                    "required": ["type"]
+                                }
+                            },
+                            "then": {
+                                "required" : ["data"]
+                            }
                         }
                     }
                 }

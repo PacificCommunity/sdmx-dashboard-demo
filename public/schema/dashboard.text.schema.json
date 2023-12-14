@@ -4,7 +4,7 @@
     "type": ["string", "object"],
     "properties": {
         "text": {
-            "description": "The text expressed in different languages",
+            "description": "The text expressed in different languages. Can be a string (using 'en' as default lang) or an object with language keys.",
             "type": ["object", "string"],
             "propertyNames": {
                 "pattern": "[a-z][a-z]"
@@ -15,11 +15,11 @@
             "type": "string"
         },
         "size": {
-            "description": "The size of the title",
+            "description": "The font size of the title",
             "type": "string"
         },
         "font": {
-            "description": "The font of the title",
+            "description": "The font family of the title",
             "type": "string"
         },
         "align": {
@@ -32,7 +32,7 @@
             ]
         },
         "weight": {
-            "description": "The weight of the title",
+            "description": "The font weight of the title",
             "type": "string",
             "enum": [
                 "normal",
