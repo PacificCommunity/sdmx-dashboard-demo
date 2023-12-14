@@ -39,7 +39,7 @@
             "default": 3
         },
         "header": {
-            "description": "The header of the dashboard. If only string provided, it will be used as the text of the footer",
+            "description": "The header of the dashboard. If only string provided, it will be used as the text of the header",
             "type": [
                 "string",
                 "object"
