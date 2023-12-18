@@ -26,9 +26,9 @@
             "description": "The alignment of the title",
             "type": "string",
             "enum": [
-                "left",
+                "start",
                 "center",
-                "right"
+                "end"
             ]
         },
         "weight": {

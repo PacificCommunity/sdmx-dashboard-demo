@@ -126,6 +126,10 @@
                                     "description": "A note with a text",
                                     "$ref": "dashboard.text.schema.json"
                                 },
+                                "frame": {
+                                    "description": "Whether to add a frame to the cell",
+                                    "type": "boolean"
+                                },
                                 "unit": {
                                     "description": "The unit of the values in the cell",
                                     "type": [

@@ -94,6 +94,7 @@ In the column section, the cells of our dashboard are defined with the following
 - `title`: the title of the cell. (**optional**). If not provided, the cell will not have a title. The title is of type [text](#text-section).
 - `subtitle`: the subtitle of the cell. (**optional**). If not provided, the cell will not have a subtitle. The subtitle is of type [text](#text-section).
 - `note`: the note of the cell. (**optional**). Used only when cell is of type `note`. The note is of type [text](#text-section).  
+- `frame`: indicates whether or not he cell has a border. Default value is `false` (**optional**).
 - `unit`: unit displayed alongside values in charts. (**optional**). Default value is null meaning that no unit will be displayed if not specified. The unit is an object with the following attributes:
   - `text`: the unit text which is of type [text](#text-section).
   - `location`: the location of the unit in the chart (**optional**). `location` is an enum that can have the following values: [`prefix`, `suffix`, `under`]. If not provided, the unit will be located as a suffix.
@@ -249,3 +250,27 @@ Both sections have the same characteristics. They can be defined as a string or 
 }
 ```
 
+#### Text section
+
+Text sections describe both text content and style. The content can either be a string or an object with language keys and values. The style is defined by the following attributes. All attributes are optional and if not provided, the text will have the default style used on the page.
+- `size`: the size of the text. (**optional**).
+- `weight`: the weight of the text. (**optional**). `weight` is an enum that can have the following values: [`normal`, `bold`, `bolder`, `lighter`]
+- `align`: the alignment of the text. (**optional**). `align` is an enum that can have the following values: [`left`, `center`, `right`]
+- `color`: the color of the text. (**optional**).
+- `font`: the font of the text. (**optional**)
+- `italic`: whether or not the text is italic. (**optional**). Default value is `false`.
+
+The `text` attribute can be a string or an object with language keys and values.
+
+
+```json
+{
+  "text": {
+    "en": "Text content",
+    "fr": "Contenu du texte"
+  },
+  "size": "16",
+  "weight": "bold",
+  "align": "center"
+}
+```
