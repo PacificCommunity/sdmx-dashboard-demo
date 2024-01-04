@@ -1,0 +1,139 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "dashboard.cell.schema.json",
+    "type": "object",
+    "properties": {
+        "id": {
+            "description": "The id of the cell",
+            "type": "string"
+        },
+        "location": {
+            "description": "The location of the cell as an array of coordinates [#row, #column]",
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+        },
+        "size": {
+            "description": "The size of the cell as an array of number of cell [nRows, nColumns]",
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "default": [1, 1]
+        },
+        "type": {
+            "description": "The type of chart to display in the cell",
+            "type": "string",
+            "enum": [
+                "line",
+                "bar",
+                "pie",
+                "column",
+                "value",
+                "drilldown",
+                "map"
+            ]
+        },
+        "title": {
+            "description": "The title of the cell",
+            "$ref": "dashboard.text.schema.json"
+        },
+        "subtitle": {
+            "description": "The title of the cell",
+            "$ref": "dashboard.text.schema.json"
+        },
+        "note": {
+            "description": "The title of the cell",
+            "$ref": "dashboard.text.schema.json"
+        },
+        "unit": {
+            "description": "The unit of the values in the cell",
+            "type" : ["string", "object"],
+            "properties": {
+                "text": {
+                    "description": "The text of the unit",
+                    "$ref": "dashboard.text.schema.json"
+                },
+                "location": {
+                    "description": "The location of the unit ",
+                    "type": "string",
+                    "enum": [
+                        "prefix",
+                        "suffix",
+                        "under"
+                    ]
+                }
+            }
+        },
+        "decimals": {
+            "description": "The number of decimals to display",
+            "type": ["string", "integer"],
+            "minimum": 0,
+            "maximum": 10
+        },
+        "displayLabels": {
+            "description": "Whether to display labels on the chart",
+            "type": "boolean"
+        },
+        "legend": {
+            "description": "The legend on the chart",
+            "type": "object",
+            "properties": {
+                "concept": {
+                    "description": "The SDMX concept to use for the legend",
+                    "type": "string"
+                },
+                "location": {
+                    "description": "The location of the unit ",
+                    "type": "string",
+                    "enum": [
+                        "top",
+                        "bottom",
+                        "right",
+                        "left",
+                        "none"
+                    ]
+                }
+            }
+        },
+        "xAxisConcept": {
+            "description": "The SDMX concept to use for the x-axis",
+            "type": "string"
+        },
+        "yAxisConcept": {
+            "description": "The SDMX concept to use for the y-axis",
+            "type": "string"
+        },
+        "download": {
+            "description": "Whether to display a download button",
+            "type": "boolean"
+        },
+        "datalink" : {
+            "description": "The link to the data",
+            "type": "string"
+        },
+        "metadatalink": {
+            "description": "The link to the metadata",
+            "type": "string"
+        },
+        "data": {
+            "description": "The data to display in the cell",
+            "type": ["string", "array"],
+            "items": {
+                "description": "An access to a data set",
+                "type": "string" 
+            }
+        }
+    },
+    "required": [
+        "location",
+        "type",
+        "data"
+    ]
+
+}

@@ -21,8 +21,9 @@ export default async function Page({ params }: { params: { dashfile: string } })
                         <h2>{params.dashfile} dashboard</h2>
                         {dashfound ? (
                             <>
-                                <p>Last update: {dashfound.date.toString()}</p>
-                                <p>Link to config file: <a href={`${dashfound.raw}`} target="_blank">{dashfound.raw}</a></p>
+                                <DashboardWrapper className="mt-3" uri={dashfound.raw} />
+                                <hr className="my-4" />
+                                <p><a href={`${dashfound.raw}`} target="_blank">Open config file</a> - Last update: {dashfound.date.toString()}</p>
                                 <h4>HTML</h4>
                                 <pre>
                                     &lt;div
@@ -38,7 +39,7 @@ export default async function Page({ params }: { params: { dashfile: string } })
                             <p className="text-danger">Dashboard config not found</p>
                         )}
                     </div>
-                    <DashboardWrapper className="mt-3" uri={dashfound.raw} />
+
                 </div>
             </div >
         </>
