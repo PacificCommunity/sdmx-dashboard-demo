@@ -2,6 +2,8 @@ import { loadDashboards } from '@/app/utils/loadDashboards'
 
 import Offbar from "@/app/components/navigation/offbar"
 
+import DashboardWrapper from "@/app/components/dashboardWrapper"
+
 export default async function Page({ params }: { params: { dashfile: string } }) {
 
     const dashboards = await loadDashboards()
@@ -29,13 +31,14 @@ export default async function Page({ params }: { params: { dashfile: string } })
                                 </pre>
                                 <h4>React</h4>
                                 <pre>
-                                    &lt;Dashboard dashUrl={`{${dashfound.raw}}`} /&gt;
+                                    &lt;SDMXDashboard dashUrl={`{${dashfound.raw}}`} /&gt;
                                 </pre>
                             </>
                         ) : (
                             <p className="text-danger">Dashboard config not found</p>
                         )}
                     </div>
+                    <DashboardWrapper className="mt-3" uri={dashfound.raw} />
                 </div>
             </div >
         </>
