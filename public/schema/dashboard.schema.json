@@ -10,28 +10,11 @@
             "type": "string"
         },
         "languages": {
-            "description": "The available languages for the dashboard",
-            "type": "array",
-            "items": {
-                "description": "A language",
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "The id of the language",
-                        "type": "string"
-                    },
-                    "label": {
-                        "description": "The label of the language",
-                        "type": "string"
-                    }
-                }
-            },
-            "default": [
-                {
-                    "id": "en",
-                    "label": "English"
-                }
-            ]
+            "description": "The available languages for the dashboard with key/values pair",
+            "type": "object",
+            "propertyNames": {
+                "pattern": "[a-z][a-z]"
+            }
         },
         "colCount": {
             "description": "The number of columns in the dashboard",
