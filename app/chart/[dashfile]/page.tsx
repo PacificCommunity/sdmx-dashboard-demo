@@ -2,6 +2,8 @@ import { loadDashboards } from '@/app/utils/loadDashboards'
 
 import Offbar from "@/app/components/navigation/offbar"
 
+import DashboardWrapper from "@/app/components/dashboardWrapper"
+
 export default async function Page({ params }: { params: { dashfile: string } }) {
 
     const dashboards = await loadDashboards()
@@ -19,8 +21,9 @@ export default async function Page({ params }: { params: { dashfile: string } })
                         <h2>{params.dashfile} dashboard</h2>
                         {dashfound ? (
                             <>
-                                <p>Last update: {dashfound.date.toString()}</p>
-                                <p>Link to config file: <a href={`${dashfound.raw}`} target="_blank">{dashfound.raw}</a></p>
+                                <DashboardWrapper className="mt-3" uri={dashfound.raw} />
+                                <hr className="my-4" />
+                                <p><a href={`${dashfound.raw}`} target="_blank">Open config file</a> - Last update: {dashfound.date.toString()}</p>
                                 <h4>HTML</h4>
                                 <pre>
                                     &lt;div
@@ -29,13 +32,14 @@ export default async function Page({ params }: { params: { dashfile: string } })
                                 </pre>
                                 <h4>React</h4>
                                 <pre>
-                                    &lt;Dashboard dashUrl={`{${dashfound.raw}}`} /&gt;
+                                    &lt;SDMXDashboard dashUrl={`{${dashfound.raw}}`} /&gt;
                                 </pre>
                             </>
                         ) : (
                             <p className="text-danger">Dashboard config not found</p>
                         )}
                     </div>
+
                 </div>
             </div >
         </>
