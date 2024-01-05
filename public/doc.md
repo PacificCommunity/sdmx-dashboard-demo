@@ -142,7 +142,7 @@ where:
       "en": "Labour Force participation rates",
       "es": "Tasas de participación en la fuerza laboral"
     },
-    "size": "20",
+    "size": "20px",
     "weight": "bold",
     "align": "center"
   },
@@ -175,8 +175,9 @@ where:
   },
   "subtitle": {
     "text": "{$TIME_PERIOD}",
-    "size": "13",
+    "size": "13px",
     "weight": "normal",
+    "style": "italic",
     "align": "center"
   },
   "labels": false,
@@ -253,12 +254,12 @@ Both sections have the same characteristics. They can be defined as a string or 
 #### Text section
 
 Text sections describe both text content and style. The content can either be a string or an object with language keys and values. The style is defined by the following attributes. All attributes are optional and if not provided, the text will have the default style used on the page.
-- `size`: the size of the text. (**optional**).
-- `weight`: the weight of the text. (**optional**). `weight` is an enum that can have the following values: [`normal`, `bold`, `bolder`, `lighter`]
+- `size`: the size of the text as in `font-size` CSS property. (**optional**).
+- `weight`: the weight of the text as in `font-weight` CSS property. (**optional**).
 - `align`: the alignment of the text. (**optional**). `align` is an enum that can have the following values: [`left`, `center`, `right`]
 - `color`: the color of the text. (**optional**).
 - `font`: the font of the text. (**optional**)
-- `italic`: whether or not the text is italic. (**optional**). Default value is `false`.
+- `style`: the style of the text as in `font-style` CSS property. (**optional**).
 
 The `text` attribute can be a string or an object with language keys and values.
 
@@ -269,7 +270,8 @@ The `text` attribute can be a string or an object with language keys and values.
     "en": "Text content",
     "fr": "Contenu du texte"
   },
-  "size": "16",
+  "size": "1.5em",
+  "style": "italic",
   "weight": "bold",
   "align": "center"
 }
