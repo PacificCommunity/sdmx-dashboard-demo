@@ -11,19 +11,19 @@
             }
         },
         "color": {
-            "description": "The color of the title",
+            "description": "The color of the text",
             "type": "string"
         },
         "size": {
-            "description": "The font size of the title",
+            "description": "The font size of the text as in font-size CSS property (eg. 12px, 1.2em, 120%)",
             "type": "string"
         },
         "font": {
-            "description": "The font family of the title",
+            "description": "The font family of the text",
             "type": "string"
         },
         "align": {
-            "description": "The alignment of the title",
+            "description": "The alignment of the text",
             "type": "string",
             "enum": [
                 "start",
@@ -32,18 +32,17 @@
             ]
         },
         "weight": {
-            "description": "The font weight of the title",
+            "description": "The font weight of the text as in font-weight CSS property (eg. normal, bold, 400, 700)",
+            "type": "string"
+        },
+        "style": {
+            "description": "The style of the text as in font-style CSS property",
             "type": "string",
             "enum": [
                 "normal",
-                "bold",
-                "bolder",
-                "lighter"
+                "italic",
+                "oblique"
             ]
-        },
-        "italic": {
-            "description": "The italicness of the title",
-            "type": "boolean"
         }
     }
 }
