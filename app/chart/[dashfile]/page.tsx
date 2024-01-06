@@ -23,17 +23,18 @@ export default async function Page({ params }: { params: { dashfile: string } })
                             <>
                                 <DashboardWrapper className="mt-3" uri={dashfound.raw} />
                                 <hr className="my-4" />
-                                <p><a href={`${dashfound.raw}`} target="_blank">Open config file</a> - Last update: {dashfound.date.toString()}</p>
-                                <h4>HTML</h4>
-                                <pre>
-                                    &lt;div
-                                    class=&quot;sdmx-dashboard-react&quot;
-                                    data-url=&quot;{dashfound.raw}&quot;&gt;&lt;/div&gt;
-                                </pre>
-                                <h4>React</h4>
-                                <pre>
-                                    &lt;SDMXDashboard dashUrl={`{${dashfound.raw}}`} /&gt;
-                                </pre>
+                                <dl>
+                                    <dt>Config file</dt>
+                                    <dd><a href={`${dashfound.raw}`} target="_blank">{dashfound.uri}</a></dd>
+                                    <dt>Last update</dt>
+                                    <dd>{dashfound.date.toString()}</dd>
+                                    <dt>React Component</dt>
+                                    <dd>
+                                        <pre>
+                                            &lt;SDMXDashboard dashUrl={`{${dashfound.raw}}`} /&gt;
+                                        </pre>
+                                    </dd>
+                                </dl>
                             </>
                         ) : (
                             <p className="text-danger">Dashboard config not found</p>
