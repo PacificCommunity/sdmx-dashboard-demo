@@ -3,10 +3,6 @@ import path from "path";
 import fs, { promises as fsp } from "fs";
 
 import Ajv from "ajv/dist/2020"
-// import { validate } from "@hyperjump/json-schema/draft-2020-12";
-// import { BASIC, DETAILED } from "@hyperjump/json-schema/experimental";
-
-
 
 import { saveConfigAsGist } from "@/app/utils/saveConfigAsGist";
 
@@ -32,32 +28,6 @@ export async function GET(request: NextRequest) {
     }
 
 }
-
-/**
- * Recursively go through errors returned by schema validation
- * function and return a string representing errors in a human
- * readable way
- */
-/*
-function recursive_parse_errors(obj: Object, level: number) {
-    // print out as many spaces as deep represents
-    // console.log(obj)
-    let inc = 0
-    const prefix = "  ".repeat(level);
-    // obj.keyword is a URL
-    // get the path part, without the domain name
-    const keyword = obj.keyword.split("/").slice(3).join("/")
-    if (keyword != 'evaluation/validate') {
-        inc = 1
-        console.log(prefix + obj.instanceLocation + ': ' + keyword)
-    }
-    if (Array.isArray(obj.errors)) {
-        for (let i = 0; i < obj.errors.length; i++) {
-            recursive_parse_errors(obj.errors[i], level + inc);
-        }
-    }
-}
-*/
 
 /**
  * Save a new config file to uploads folder or Github Gist
@@ -172,7 +142,7 @@ export async function POST(request: NextRequest) {
         revalidatePath('/chart/[dashfile]')
         // Return success message
         return NextResponse.json({ success: true });
-    } catch (e) {
+    } catch (error) {
         return NextResponse.json({
             error: `Error saving file: ${error}`
         }, { status: 500 });
