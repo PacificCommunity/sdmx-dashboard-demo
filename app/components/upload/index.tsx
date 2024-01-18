@@ -96,7 +96,7 @@ const UploadDropzone = () => {
                   {
                     errorFiles[file.name] ? (
                       errorFiles[file.name].map((error, idx) => (
-                        <div className="small">{idx ? '- ' : ''}{error}</div>
+                        <div key={idx} className="small">{idx ? '- ' : ''}{error}</div>
                       ))
                     ) : null
                   }
