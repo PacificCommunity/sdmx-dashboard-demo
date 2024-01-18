@@ -45,10 +45,15 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: `No file provided. Please select one.` }, { status: 500 });
     }
 
+    // data minumim stuff
+    type ConfigData = {
+        id: string
+    }
+
     // Init data
     let buffer
     let jsonstring = ''
-    let data = {}
+    let data: ConfigData
 
     try {
         // load file as Buffer
@@ -56,7 +61,7 @@ export async function POST(request: NextRequest) {
         buffer = Buffer.from(bytes);
         jsonstring = buffer.toString('utf8');
         // parse JSON
-        data = await JSON.parse(jsonstring)
+        data = await JSON.parse(jsonstring) as ConfigData
     } catch (error) {
         // error parsing data
         return NextResponse.json({
@@ -72,17 +77,12 @@ export async function POST(request: NextRequest) {
         const schemaText = await JSON.parse(fs.readFileSync(path.join(schemaFolderPath, 'dashboard.text.schema.json'), "utf8"))
 
         // initialize validator
-        // const schema = require('./schema.json');
-        // const textSchema = require('./text.schema.json');
-        // const data = require('./data.json');
-
         const ajv = new Ajv({
             allErrors: true,
             coerceTypes: true,
             useDefaults: true
         });
 
-        // ajv.addSchema(schemaRoot, "dashboard.schema.json")
         ajv.addSchema(schemaText, "dashboard.text.schema.json")
 
         const validate = ajv.compile(schemaRoot);
