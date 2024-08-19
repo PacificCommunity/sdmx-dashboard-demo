@@ -5,7 +5,7 @@ import getServerHostName from "@/app/utils/getServerHostName";
 
 export const loadDashboards = async () => {
 
-    const configFolderPath = path.join(process.cwd(), "/public/uploads");
+    const configFolderPath = path.resolve("./public", "uploads");
 
     if (process.env.GIST_TOKEN) {
         // Option 1: Load from Github Gist

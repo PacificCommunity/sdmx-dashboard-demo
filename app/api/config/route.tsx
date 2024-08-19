@@ -9,8 +9,8 @@ import { saveConfigAsGist } from "@/app/utils/saveConfigAsGist";
 import { loadDashboards } from '@/app/utils/loadDashboards'
 import { revalidateTag, revalidatePath } from "next/cache";
 
-const configFolderPath = path.join(process.cwd(), "/public/uploads");
-const schemaFolderPath = path.join(process.cwd(), "/public/schema");
+const configFolderPath = path.resolve("./public", "uploads");
+const schemaFolderPath = path.resolve("./public", "schema");
 
 /**
  * Load list of config files from uploads folder or Github Gist
@@ -75,6 +75,9 @@ export async function POST(request: NextRequest) {
         // load schemas
         const schemaRoot = await JSON.parse(fs.readFileSync(path.join(schemaFolderPath, 'dashboard.schema.json'), "utf8"))
         const schemaText = await JSON.parse(fs.readFileSync(path.join(schemaFolderPath, 'dashboard.text.schema.json'), "utf8"))
+        const schemaChart = await JSON.parse(fs.readFileSync(path.join(schemaFolderPath, 'visual.chart.schema.json'), "utf8"))
+        const schemaMap = await JSON.parse(fs.readFileSync(path.join(schemaFolderPath, 'visual.map.schema.json'), "utf8"))
+        const schemaValue = await JSON.parse(fs.readFileSync(path.join(schemaFolderPath, 'visual.value.schema.json'), "utf8"))
 
         // initialize validator
         const ajv = new Ajv({
@@ -84,6 +87,9 @@ export async function POST(request: NextRequest) {
         });
 
         ajv.addSchema(schemaText, "dashboard.text.schema.json")
+        ajv.addSchema(schemaChart, "visual.chart.schema.json")
+        ajv.addSchema(schemaMap, "visual.map.schema.json")
+        ajv.addSchema(schemaValue, "visual.value.schema.json")
 
         const validate = ajv.compile(schemaRoot);
         const valid = validate(data);
@@ -139,7 +145,7 @@ export async function POST(request: NextRequest) {
         }
         // Revalidate cache on successful upload
         revalidatePath('/')
-        revalidatePath('/chart/[dashfile]')
+        revalidatePath(`/chart/${data.id}`)
         // Return success message
         return NextResponse.json({ success: true });
     } catch (error) {
