@@ -32,7 +32,7 @@ export default async function Page({ params }: { params: { dashfile: string } })
                                 </pre>
                                 <h4>React</h4>
                                 <pre>
-                                    &lt;SDMXDashboard dashUrl={`{${dashfound.raw}}`} /&gt;
+                                    &lt;SDMXDashboard url={`{"${dashfound.raw}"}`} /&gt;
                                 </pre>
                             </>
                         ) : (

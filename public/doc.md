@@ -14,9 +14,12 @@ The application does not provide a form to create the JSON configuration file. T
 The configuration file follows a JSON format with specific keys and values.
 Each key represents a specific aspect of the dashboard, and its value defines its configuration.
 
-The full schema can be found here. For more readibility, the schema is split in two files.
+The full schema can be found here. For more readibility, the schema is splitted:
 - [Dashboard schema](./schema/dashboard.schema.json)
 - [Dashboard text schema](./schema/dashboard-text.schema.json)
+- [Visual chart schema](./schema/visual.chart.schema.json)
+- [Visual map schema](./schema/visual.map.schema.json)
+- [Visual value schema](./schema/visual.value.schema.json)
 
 
 
@@ -104,7 +107,8 @@ In the column section, the cells of our dashboard are defined with the following
   - `concept`: indicates the concept (dimension) that defines multiple series to be displayed in the visualization. For `pie` indicates the dimension that defines the sectors of the pie; for `line`, its values identify each of the lines; for `bar` or `column`, the values of this concept define each of the clusters. The legend is composed of its value labels i.e., `{$<dimension item id>}`. If several queries are included in `data` node, it should specify `MULTI`.
   In case of `drilldown` chart type, we have a multi-dimensional datasets and the `concept` value here stores the dimension used on the main chart.
   - `location`: the location of the legend in the chart (**optional**). `location` is an enum that can have the following values: [`top`, `bottom`, `left`, `right`, `none`]. If not provided, the legend will be located at the bottom.
-- `xAxisConcept`: indicates the concept to be allocated to the “x” axis, usually `TIME_PERIOD` for `line`. For `bar` or `column` it indicates the dimension that define the bars. (**required** for all chart types except `value`). When defining a `drilldown` chart, this concept is used to define the dimension used on the drilleddown chart. In case of `xAxisConcept` is `TIME_PERIOD`, the main chart will display for each category (`legend.concept`) the latest value available, while the value `Total` (`_T`) will be used for other kind of dimension.
+- `xAxisConcept`: indicates the concept to be allocated to the “x” axis, usually `TIME_PERIOD` for `line`. For `bar` or `column` it indicates the dimension that define the bars. (**required** for all chart types except `value`). 
+- `drilldown`: provides some details on how the drilled down chart should be configured, it reuses the notions of `legend` and `xAxisConcept`. In case of `drilldown.xAxisConcept` is `TIME_PERIOD`, the main chart will display for each category (`drilldown.legend.concept`) the latest value available, while the value `Total` (`_T`) will be used for other kind of dimension.
 - `yAxisConcept`: indicates the concept to be allocated to the “y” axis, usually the observation value representing the `MEASURE`. (Not applicable for `pie` and `value` chart types). Normally it is the `OBS_VALUE` concept.
 - `download`: indicates whether or not to display the download button. (**optional**). Default value is `false`. If set to `true`, a download button will be displayed.
 - `dataLink`: An URL of an application or file containing related data. It is actionable by clicking on the chart to open in a new browser tab. (**optional**). If not provided, no link will be displayed.
@@ -195,8 +199,14 @@ where:
   "title": "Household Expenditure",
   "subtitle": "{$TIME_PERIOD}",
   "decimals": "{$DECIMALS}",
+  "drilldown": {
+    "legend": {
+      "concept": "GEO_PICT"
+    },
+    "xAxisConcept": "TIME_PERIOD"
+  },
   "legend": {
-    "concept": "GEO_PICT",
+    "concept": "INDICATOR",
     "location": "none"
   },
   "xAxisConcept": "COMMODITY",

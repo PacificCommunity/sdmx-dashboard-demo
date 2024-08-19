@@ -1,0 +1,196 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "visual.chart.schema.json",
+    "type": "object",
+    "properties": {
+        "id": {
+            "description": "The id of the cell",
+            "type": "string"
+        },
+        "type": {
+            "description": "The type of chart to display in the cell",
+            "type": "string",
+            "enum": [
+                "line",
+                "bar",
+                "pie",
+                "column",
+                "drilldown",
+                "note"
+            ]
+        },
+        "colSize": {
+            "description": "The number of columns the cell should take in the row",
+            "type": "number",
+            "default": 1
+        },
+        "title": {
+            "description": "The title of the cell",
+            "$ref": "dashboard.text.schema.json"
+        },
+        "subtitle": {
+            "description": "The title of the cell",
+            "$ref": "dashboard.text.schema.json"
+        },
+        "note": {
+            "description": "A note with a text",
+            "$ref": "dashboard.text.schema.json"
+        },
+        "frame": {
+            "description": "Whether to add a frame to the cell",
+            "type": "boolean"
+        },
+        "unit": {
+            "description": "The unit of the values in the cell",
+            "anyOf": [{
+                "type": "string"
+            }, {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "description": "The text of the unit",
+                        "$ref": "dashboard.text.schema.json"
+                    },
+                    "location": {
+                        "description": "The location of the unit ",
+                        "type": "string",
+                        "enum": [
+                            "prefix",
+                            "suffix",
+                            "under"
+                        ]
+                    }
+                }
+            }]
+        },
+        "decimals": {
+            "description": "The number of decimals to display",
+            "anyOf": [{
+                "type": "string"
+            }, {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10
+
+            }]
+        },
+        "displayLabels": {
+            "description": "Whether to display labels on the chart",
+            "type": "boolean"
+        },
+        "legend": {
+            "description": "The legend on the chart",
+            "type": "object",
+            "properties": {
+                "concept": {
+                    "description": "The SDMX concept to use for the legend",
+                    "type": "string"
+                },
+                "location": {
+                    "description": "The location of the unit ",
+                    "type": "string",
+                    "enum": [
+                        "top",
+                        "bottom",
+                        "right",
+                        "left",
+                        "none"
+                    ]
+                }
+            }
+        },
+        "drilldown": {
+            "type": "object",
+            "description": "The drilldown configuration",
+            "properties": {
+                "xAxisConcept": {
+                    "description": "The SDMX concept to use for the x-axis when drilled down",
+                    "type": "string"
+                },
+                "legend": {
+                    "description": "The legend on the chart when drilled down",
+                    "type": "object",
+                    "properties": {
+                        "concept": {
+                            "description": "The SDMX concept to use for the legend when drilled down",
+                            "type": "string"
+                        },
+                        "location": {
+                            "description": "The location of the unit when drilled down",
+                            "type": "string",
+                            "enum": [
+                                "top",
+                                "bottom",
+                                "right",
+                                "left",
+                                "none"
+                            ]
+                        }
+                    }
+                
+                }
+            }
+        },
+        "xAxisConcept": {
+            "description": "The SDMX concept to use for the x-axis",
+            "type": "string"
+        },
+        "yAxisConcept": {
+            "description": "The SDMX concept to use for the y-axis",
+            "type": "string"
+        },
+        "download": {
+            "description": "Whether to display a download button",
+            "type": "boolean"
+        },
+        "datalink": {
+            "description": "The link to the data",
+            "type": "string"
+        },
+        "metadatalink": {
+            "description": "The link to the metadata",
+            "type": "string"
+        },
+        "data": {
+            "description": "The data to display in the cell. Can be a single or multiple data sets.",
+            "anyOf": [{
+                "type": "array",
+                "items": {
+                    "description": "An access to a data set. Can be a simple SDMX URL or an expression.",
+                    "type": "string"
+                }
+            }, {
+                "type": "string"
+            }]
+        },
+        "extraOptions": {
+            "description": "Extra options to pass to the chart library HighchartsJS",
+            "type": "object"
+        }
+    },
+    "required": [
+        "type"
+    ],
+    "allOf": [{
+        "if": {
+            "not": {
+                "properties": {
+                    "type": { "const": "note" }
+                },
+                "required": ["type"]
+            }
+        },
+        "then": {
+            "required" : ["data"]
+        }
+    }, {
+        "if": {
+            "properties": {
+                "type": { "const": "drilldown" }
+            }
+        },
+        "then": {
+            "required" : ["legend.concept"]
+        }
+    }]
+}
