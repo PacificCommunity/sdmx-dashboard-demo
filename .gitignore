@@ -38,4 +38,4 @@ next-env.d.ts
 .vscode
 
 # upload files
-public/uploads/
+public/uploads/*.json
