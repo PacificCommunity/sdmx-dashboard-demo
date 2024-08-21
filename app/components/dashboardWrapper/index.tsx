@@ -9,7 +9,7 @@ const DashboardWrapper = (props:
 ) => {
   return (
     <div className={props.className}>
-      <SDMXDashboard dashUrl={props.uri} />
+      <SDMXDashboard url={props.uri} />
     </div>
   );
 }

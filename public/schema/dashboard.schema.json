@@ -23,198 +23,58 @@
         },
         "header": {
             "description": "The header of the dashboard. If only string provided, it will be used as the text of the header",
-            "type": [
-                "string",
-                "object"
-            ],
-            "properties": {
-                "title": {
-                    "description": "The title of the dashboard",
-                    "$ref": "dashboard.text.schema.json"
-                },
-                "subtitle": {
-                    "description": "The subtitle of the dashboard",
-                    "$ref": "dashboard.text.schema.json"
+            "anyOf": [{
+                "type": "string"
+            }, {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "description": "The title of the dashboard",
+                        "$ref": "dashboard.text.schema.json"
+                    },
+                    "subtitle": {
+                        "description": "The subtitle of the dashboard",
+                        "$ref": "dashboard.text.schema.json"
+                    }
                 }
-            }
+            }]
         },
         "footer": {
             "description": "The footer of the dashboard. If only string provided, it will be used as the text of the footer",
-            "type": [
-                "string",
-                "object"
-            ],
-            "properties": {
-                "title": {
-                    "description": "The title of the dashboard",
-                    "$ref": "dashboard.text.schema.json"
-                },
-                "subtitle": {
-                    "description": "The subtitle of the dashboard",
-                    "$ref": "dashboard.text.schema.json"
+            "anyOf": [{
+                "type": "string"
+            }, {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "description": "The title of the dashboard",
+                        "$ref": "dashboard.text.schema.json"
+                    },
+                    "subtitle": {
+                        "description": "The subtitle of the dashboard",
+                        "$ref": "dashboard.text.schema.json"
+                    }
                 }
-            }
+            }]
         },
         "rows": {
             "description": "A row matching the bootstrap grid layout",
             "type": "array",
             "items": {
-                "description": "A column",
                 "type": "object",
+                "description": "A column containing cells of visuals",
                 "properties": {
                     "columns": {
                         "type": "array",
+                        "description": "A column matching the bootstrap grid layout",
                         "items": {
                             "type": "object",
-                            "properties": {
-                                "id": {
-                                    "description": "The id of the cell",
-                                    "type": "string"
-                                },
-                                "colorScheme": {
-                                    "description": "The color scheme of the chart in case of map",
-                                    "type": "string",
-                                    "enum": [
-                                        "Blues", "BrBg", "Greens", "Greys", "Oranges", "PRGn", "PiYG", "PuOr", "Purples", "RdGy", "RdYlBu", "RdYlGn", "Reds", "Spectral", "Turbo", "Viridis"
-                                    ]
-                                },
-                                "type": {
-                                    "description": "The type of chart to display in the cell",
-                                    "type": "string",
-                                    "enum": [
-                                        "line",
-                                        "bar",
-                                        "pie",
-                                        "column",
-                                        "value",
-                                        "drilldown",
-                                        "note",
-                                        "map"
-                                    ]
-                                },
-                                "colSize": {
-                                    "description": "The number of columns the cell should take in the row",
-                                    "type": "number",
-                                    "default": 1
-                                },
-                                "title": {
-                                    "description": "The title of the cell",
-                                    "$ref": "dashboard.text.schema.json"
-                                },
-                                "subtitle": {
-                                    "description": "The title of the cell",
-                                    "$ref": "dashboard.text.schema.json"
-                                },
-                                "note": {
-                                    "description": "A note with a text",
-                                    "$ref": "dashboard.text.schema.json"
-                                },
-                                "frame": {
-                                    "description": "Whether to add a frame to the cell",
-                                    "type": "boolean"
-                                },
-                                "unit": {
-                                    "description": "The unit of the values in the cell",
-                                    "type": [
-                                        "string",
-                                        "object"
-                                    ],
-                                    "properties": {
-                                        "text": {
-                                            "description": "The text of the unit",
-                                            "$ref": "dashboard.text.schema.json"
-                                        },
-                                        "location": {
-                                            "description": "The location of the unit ",
-                                            "type": "string",
-                                            "enum": [
-                                                "prefix",
-                                                "suffix",
-                                                "under"
-                                            ]
-                                        }
-                                    }
-                                },
-                                "decimals": {
-                                    "description": "The number of decimals to display",
-                                    "type": [
-                                        "string",
-                                        "integer"
-                                    ],
-                                    "minimum": 0,
-                                    "maximum": 10
-                                },
-                                "displayLabels": {
-                                    "description": "Whether to display labels on the chart",
-                                    "type": "boolean"
-                                },
-                                "legend": {
-                                    "description": "The legend on the chart",
-                                    "type": "object",
-                                    "properties": {
-                                        "concept": {
-                                            "description": "The SDMX concept to use for the legend",
-                                            "type": "string"
-                                        },
-                                        "location": {
-                                            "description": "The location of the unit ",
-                                            "type": "string",
-                                            "enum": [
-                                                "top",
-                                                "bottom",
-                                                "right",
-                                                "left",
-                                                "none"
-                                            ]
-                                        }
-                                    }
-                                },
-                                "xAxisConcept": {
-                                    "description": "The SDMX concept to use for the x-axis",
-                                    "type": "string"
-                                },
-                                "yAxisConcept": {
-                                    "description": "The SDMX concept to use for the y-axis",
-                                    "type": "string"
-                                },
-                                "download": {
-                                    "description": "Whether to display a download button",
-                                    "type": "boolean"
-                                },
-                                "datalink": {
-                                    "description": "The link to the data",
-                                    "type": "string"
-                                },
-                                "metadatalink": {
-                                    "description": "The link to the metadata",
-                                    "type": "string"
-                                },
-                                "data": {
-                                    "description": "The data to display in the cell. Can be a single or multiple data sets.",
-                                    "type": [
-                                        "string",
-                                        "array"
-                                    ],
-                                    "items": {
-                                        "description": "An access to a data set. Can be a simple SDMX URL or an expression.",
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "type"
-                            ],
-                            "if": {
-                                "not": {
-                                    "properties": {
-                                        "type": { "const": "note" }
-                                    },
-                                    "required": ["type"]
-                                }
-                            },
-                            "then": {
-                                "required" : ["data"]
-                            }
+                            "description": "A visual cell",
+                            "oneOf": [
+                                {"$ref": "visual.value.schema.json"},
+                                {"$ref": "visual.chart.schema.json"},
+                                {"$ref": "visual.map.schema.json"}
+                            ]
                         }
                     }
                 }

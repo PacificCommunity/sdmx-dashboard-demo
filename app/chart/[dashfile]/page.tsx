@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: { dashfile: string } })
                                     <dt>React Component</dt>
                                     <dd>
                                         <pre>
-                                            &lt;SDMXDashboard dashUrl={`{${dashfound.raw}}`} /&gt;
+                                            &lt;SDMXDashboard url={`{"${dashfound.raw}"}`} /&gt;
                                         </pre>
                                     </dd>
                                 </dl>

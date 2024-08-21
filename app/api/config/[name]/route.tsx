@@ -4,7 +4,7 @@ import fs, { promises as fsp } from "fs";
 import { loadOneJsonFromGists, loadUserGists } from "@/app/utils/loadJsonFromGists";
 import { revalidatePath, revalidateTag } from "next/cache";
 
-const configFolderPath = path.join(process.cwd(), "/public/uploads");
+const configFolderPath = path.resolve("./public", "uploads");
 
 /**
  * 
@@ -73,9 +73,8 @@ export async function DELETE(request: NextRequest, { params }: { params: any }) 
 
         // Revalidate cache on successful deletion
         revalidatePath('/')
-        revalidatePath('/chart/[dashfile]')
 
-        return NextResponse.redirect(`${request.nextUrl.protocol}${request.nextUrl.host}/`)
+        return NextResponse.json({ message: `File ${params.name}.json deleted` })
     }
     catch (error) {
         console.error(error)

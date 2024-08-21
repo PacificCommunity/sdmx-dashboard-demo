@@ -14,9 +14,12 @@ The application does not provide a form to create the JSON configuration file. T
 The configuration file follows a JSON format with specific keys and values.
 Each key represents a specific aspect of the dashboard, and its value defines its configuration.
 
-The full schema can be found here. For more readibility, the schema is split in two files.
+The full schema can be found here. For more readibility, the schema has been splitted in multiple files:
 - [Dashboard schema](./schema/dashboard.schema.json)
 - [Dashboard text schema](./schema/dashboard-text.schema.json)
+- [Visual chart schema](./schema/visual.chart.schema.json)
+- [Visual map schema](./schema/visual.map.schema.json)
+- [Visual value schema](./schema/visual.value.schema.json)
 
 
 
@@ -101,14 +104,39 @@ In the column section, the cells of our dashboard are defined with the following
 - `decimals`: the number of decimals displayed in charts. (**optional**). Can be either an integer or a string pointing to a concept (eg. `DECIMALS`). If not provided, the values will be displayed the way they are rendered in the SDMX-JSON.
 - `displayLabels`: whether or not to display labels in charts. (**optional**). Default value is `false`. If set to `true`, charts labels will be displayed.
 - `legend`: the legend associated to the chart. (**required**). `legend` is an object with the following attributes:
-  - `concept`: indicates the concept (dimension) that defines multiple series to be displayed in the visualization. For `pie` indicates the dimension that defines the sectors of the pie; for `line`, its values identify each of the lines; for `bar` or `column`, the values of this concept define each of the clusters. The legend is composed of its value labels i.e., `{$<dimension item id>}`. If several queries are included in `data` node, it should specify `MULTI`.
+  - `concept`: indicates the concept (dimension) that defines multiple series to be displayed in the visualization. For `line`, its values identify each of the lines; for `bar` or `column`, the values of this concept define each of the clusters. The legend is composed of its value labels i.e., `{$<dimension item id>}`. If several queries are included in `data` node, it should specify `MULTI`.
   In case of `drilldown` chart type, we have a multi-dimensional datasets and the `concept` value here stores the dimension used on the main chart.
   - `location`: the location of the legend in the chart (**optional**). `location` is an enum that can have the following values: [`top`, `bottom`, `left`, `right`, `none`]. If not provided, the legend will be located at the bottom.
-- `xAxisConcept`: indicates the concept to be allocated to the “x” axis, usually `TIME_PERIOD` for `line`. For `bar` or `column` it indicates the dimension that define the bars. (**required** for all chart types except `value`). When defining a `drilldown` chart, this concept is used to define the dimension used on the drilleddown chart. In case of `xAxisConcept` is `TIME_PERIOD`, the main chart will display for each category (`legend.concept`) the latest value available, while the value `Total` (`_T`) will be used for other kind of dimension.
+- `xAxisConcept`: indicates the concept to be allocated to the “x” axis, usually `TIME_PERIOD` for `line`. For `bar` or `column` it indicates the dimension that define the bars. (**required** for all chart types except `value`). When used with `pie` chart type, it indicates the dimension that defines the sectors of the pie.
+- `drilldown`: provides some details on how the drilled down chart should be configured, it reuses the notions of `legend` and `xAxisConcept`. In case of `drilldown.xAxisConcept` is `TIME_PERIOD`, the main chart will display for each category (`drilldown.legend.concept`) the latest value available, while the value `Total` (`_T`) will be used for other kind of dimension.
 - `yAxisConcept`: indicates the concept to be allocated to the “y” axis, usually the observation value representing the `MEASURE`. (Not applicable for `pie` and `value` chart types). Normally it is the `OBS_VALUE` concept.
 - `download`: indicates whether or not to display the download button. (**optional**). Default value is `false`. If set to `true`, a download button will be displayed.
 - `dataLink`: An URL of an application or file containing related data. It is actionable by clicking on the chart to open in a new browser tab. (**optional**). If not provided, no link will be displayed.
 - `metadataLink`: An URL of an application or file containing reference metadata. metadata. If present, a "Blue 'i'" icon is displayed besides the title, and by clicking on it the link opens in a new browser tab. (**optional**). If not provided, no link will be displayed.
+- `adaptiveTextSize`: indicates whether or not to adapt the text size to the cell size for `value` chart type. Default value is `false` (**optional**).
+- `colorPalette`: the color palette used in the charts. The dict should specify for each dimension the color associated to each dimension value (using the `id` as keys). The dimension is the concept that is defined as a `legend` concept. The colors are defined as hex values. (**optional**).
+```json
+{
+  "GEO_PICT": {
+    "CK": "#E16A86",
+    "FJ": "#D7765B",
+    "FM": "#C7821C",
+    "KI": "#AF8E00",
+    "MH": "#909800",
+    "NC": "#65A100",
+    "NR": "#00A846",
+    "NU": "#00AC74",
+    "PF": "#00AD9A",
+    "PG": "#00AABA",
+    "PW": "#00A2D3",
+    "SB": "#4495E2",
+    "TO": "#9183E6",
+    "TV": "#BD72DD",
+    "VU": "#D766C9",
+    "WF": "#E264AB"
+  }
+}
+```
 - `data`: data object to describe the data displayed by the chart. Can be a string of an array of string and is **required** in all cases but chart type `note`. The syntax to specify the `data` for the chart is the following:
 ```json
   [
@@ -128,7 +156,9 @@ where:
     - GEO_DIMENSION_ID: id of the dimension holding reference to the area of application
     - GEOJSON_URL: a URL to a GeoJSON file holding the geometries
     - EPSG_CODE: the projection code (eg. 'EPSG:4326')
-    - GEO_ATTRIBUTE: name of the attribute holding a reference to the geometry (value of this attribute must be equal to the SDMX dimension id value). 
+    - GEO_ATTRIBUTE: name of the attribute holding a reference to the geometry (value of this attribute must be equal to the SDMX dimension id value).
+  - in case of a `pie` type chart the expression within `data` can use the `hist` operator to count every occurrence of a value in the dataset. The syntax is `hist(SDMX_URL)`.
+  - in case of a `value` chart, the expression within `data` can use the `count` operator to count the number of observations in the dataset that match the expression. The syntax is `count(Dataflow query <operator> Value)` with operator available: `===`, `!===`.
 
 ##### Simple example of a cell definition
 
@@ -158,8 +188,9 @@ where:
 }
 ```
 
-##### Example with data expression 
+##### Examples with data expression
 
+Value component using an expression with a multiplication operator:
 ```json
 {
   "id": "multiple_jobs",
@@ -183,7 +214,119 @@ where:
   "labels": false,
   "data": "https://www.ilo.org/sdmx/rest/data/ILO,DF_EES_TEES_SEX_MJH_NB,1.0/CHL.A..SEX_T.MJH_AGGREGATE_MULTI?endPeriod=2022&lastNObservations=1 * {UNIT_MULT}"
 }
+```
+Value component with a `count` operator:
+```json
+{
+  "id": "SH_STA_MALR",
+  "type": "value",
+  "xAxisConcept": "GEO_PICT",
+  "data": ["count(https://stats-sdmx-disseminate-staging.pacificdata.org/rest/data/DF_BP50/A.SH_STA_MALR.CK+FJ+FM+KI+MH+NC+NR+NU+PF+PG+PW+SB+TO+TV+VU+WS._T._T._T._T._T._T._Z._T?lastNObservations=1&dimensionAtObservation=AllDimensions !== 0)"],
+  "unit": {
+    "text": "countries",
+    "location": "under"
+  },
+  "adaptiveTextSize": true,
+  "subtitle": {
+    "text": "<a href=''>Source PDH.stat</a>",
+    "weight": "light",
+    "size": "16px"
+  }
+}
+```
+Half-donut chart using a `hist` operator:
+```json
+{
+  "data": ["hist(https://stats-sdmx-disseminate-staging.pacificdata.org/rest/data/DF_BP50/.SG_REG_BRTHDETH.........?lastNObservations=1&dimensionAtObservation=AllDimensions)"],
+  "subtitle": {
+    "text": "<a href='https://stats-staging.pacificdata.org/vis?lc=en&df[ds]=SPC2&df[id]=DF_BP50&df[ag]=SPC&df[vs]=1.0&av=true&pd=2013%2C2023&lo=1&lom=LASTNOBSERVATIONS&dq=A.DC_TRF_TOTL.._T._T._T._T._T._T._Z._T&to[TIME_PERIOD]=false&ly[rs]=INDICATOR&ly[rw]=GEO_PICT%2CTIME_PERIOD'>Source PDH.stat</a>",
+  },
+  "id": "SG_REG_BRTHDETH",
+  "type": "pie",
+  "xAxisConcept": "GEO_PICT",
+  "legend": {
+    "concept": "INDICATOR",
+    "location": "bottom"
+  },
+  "yAxisConcept": "OBS_VALUE",
+  "extraOptions": {
+    "plotOptions": {
+      "pie": {
+        "dataLabels": {
+          "enabled": false
+        },
+        "startAngle": -90,
+        "endAngle": 90,
+        "center": ["50%", "65%"],
+        "size": "140%",
+        "innerSize": "50%"
+      }
+    },
+    "tooltip": {
+      "pointFormatter": "function(point) {
+        return `${this.binValue === 1 ? 'Yes' : 'No'}`
+      }"
+    }
+  }
+}
+```
 
+##### Example using colorPalette
+
+A line chart with a defined `colorPalette`
+```json
+{
+  "data": ["https://stats-sdmx-disseminate-staging.pacificdata.org/rest/data/DF_BP50/A.DC_TRF_TOTL.CK+FJ+FM+KI+MH+NR+NU+PF+PG+PW+SB+TO+TV+VU+WS._T._T._T._T._T._T._Z._T?dimensionAtObservation=AllDimensions"],
+  "id": "DC_TRF_TOTL",
+  "type": "line",
+  "xAxisConcept": "TIME_PERIOD",
+  "legend": {
+    "concept": "GEO_PICT",
+    "location": "right"
+  },
+  "yAxisConcept": "OBS_VALUE",
+  "colorPalette": {
+    "GEO_PICT": {
+      "CK": "#E16A86",
+      "FJ": "#D7765B",
+      "FM": "#C7821C",
+      "KI": "#AF8E00",
+      "MH": "#909800",
+      "NC": "#65A100",
+      "NR": "#00A846",
+      "NU": "#00AC74",
+      "PF": "#00AD9A",
+      "PG": "#00AABA",
+      "PW": "#00A2D3",
+      "SB": "#4495E2",
+      "TO": "#9183E6",
+      "TV": "#BD72DD",
+      "VU": "#D766C9",
+      "WF": "#E264AB"
+    }
+  }
+}
+```
+Column chart using a colorPalette:
+```json
+{
+  "data": ["https://stats-sdmx-disseminate-staging.pacificdata.org/rest/data/DF_BP50/A.SE_ACC_HNDWSH.CK+FJ+FM+MH+NR+NU+PW+TO+TV+WS._T._T._T._T._T._T.PRIMARY_ALL+SECONDARY_LOWER+SECONDARY_UPPER._T?lastNObservations=1&dimensionAtObservation=AllDimensions"],
+  "id": "SE_ACC_HNDWSH",
+  "type": "column",
+  "xAxisConcept": "GEO_PICT",
+  "legend": {
+    "concept": "COMPOSITE_BREAKDOWN",
+    "location": "bottom"
+  },
+  "yAxisConcept": "OBS_VALUE",
+  "colorPalette": {
+    "COMPOSITE_BREAKDOWN": {
+      "SECONDARY_LOWER": "#E16A86",
+      "PRIMARY_ALL": "#50A315",
+      "SECONDARY_UPPER": "#009ADE"
+    }
+  }
+}
 ```
 
 ##### Example of a drilldown definition
@@ -195,8 +338,14 @@ where:
   "title": "Household Expenditure",
   "subtitle": "{$TIME_PERIOD}",
   "decimals": "{$DECIMALS}",
+  "drilldown": {
+    "legend": {
+      "concept": "GEO_PICT"
+    },
+    "xAxisConcept": "TIME_PERIOD"
+  },
   "legend": {
-    "concept": "GEO_PICT",
+    "concept": "INDICATOR",
     "location": "none"
   },
   "xAxisConcept": "COMMODITY",

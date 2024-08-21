@@ -1,48 +1,56 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "dashboard.text.schema.json",
-    "type": ["string", "object"],
-    "properties": {
-        "text": {
-            "description": "The text expressed in different languages. Can be a string (using 'en' as default lang) or an object with language keys.",
-            "type": ["object", "string"],
-            "propertyNames": {
-                "pattern": "[a-z][a-z]"
+    "anyOf": [{
+        "type": "string"
+    }, {
+        "type": "object",
+        "properties": {
+            "text": {
+                "description": "The text expressed in different languages. Can be a string (using 'en' as default lang) or an object with language keys.",
+                "anyOf": [{
+                    "type": "string"
+                }, {
+                    "type": "object",
+                    "propertyNames": {
+                        "pattern": "[a-z][a-z]"
+                    }
+                }]
+            },
+            "color": {
+                "description": "The color of the text",
+                "type": "string"
+            },
+            "size": {
+                "description": "The font size of the text as in font-size CSS property (eg. 12px, 1.2em, 120%)",
+                "type": "string"
+            },
+            "font": {
+                "description": "The font family of the text",
+                "type": "string"
+            },
+            "align": {
+                "description": "The alignment of the text",
+                "type": "string",
+                "enum": [
+                    "center",
+                    "left",
+                    "right"
+                ]
+            },
+            "weight": {
+                "description": "The font weight of the text as in font-weight CSS property (eg. normal, bold, 400, 700)",
+                "type": "string"
+            },
+            "style": {
+                "description": "The style of the text as in font-style CSS property",
+                "type": "string",
+                "enum": [
+                    "normal",
+                    "italic",
+                    "oblique"
+                ]
             }
-        },
-        "color": {
-            "description": "The color of the text",
-            "type": "string"
-        },
-        "size": {
-            "description": "The font size of the text as in font-size CSS property (eg. 12px, 1.2em, 120%)",
-            "type": "string"
-        },
-        "font": {
-            "description": "The font family of the text",
-            "type": "string"
-        },
-        "align": {
-            "description": "The alignment of the text",
-            "type": "string",
-            "enum": [
-                "start",
-                "center",
-                "end"
-            ]
-        },
-        "weight": {
-            "description": "The font weight of the text as in font-weight CSS property (eg. normal, bold, 400, 700)",
-            "type": "string"
-        },
-        "style": {
-            "description": "The style of the text as in font-style CSS property",
-            "type": "string",
-            "enum": [
-                "normal",
-                "italic",
-                "oblique"
-            ]
         }
-    }
+    }]
 }
