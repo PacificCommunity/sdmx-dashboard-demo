@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { SDMXDashboard } from 'sdmx-dashboard-react';
+import { SDMXDashboard } from 'sdmx-dashboard-components';
 
 const DashboardWrapper = (props:
   { uri: string, className?: string }

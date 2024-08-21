@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The dashboards are created by the `sdmx-dashboard-react` application out of a JSON configuration file.
+The dashboards are created by the `sdmx-dashboard-components` application out of a JSON configuration file.
 This application is a helper to manage the JSON configuration files. The user can import a JSON configuration file and the application validates them against a JSON schema.
 The application does not provide a form to create the JSON configuration file. The user has to create the JSON configuration file by hand or using a form generator. This could be included in a next version of the application.
 

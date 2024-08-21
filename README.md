@@ -1,7 +1,7 @@
-# SDMX Dashboards manager
+# SDMX Dashboard Demo application
 
 Manage your dashboard config files (JSON format) and preview dashboards
-using the [sdmx-dashboard-react](https://github.com/stanozr/sdmx-dashboard-react) client application.
+using the [sdmx-dashboard-components](https://github.com/PacificCommunity/sdmx-dashboard-components) client application.
 
 ## Online demo
 
@@ -42,8 +42,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Build and run docker image
 
 ```
-docker build -t dashboard-creator .
+docker build -t sdmx-dashboard-demo .
 
-docker run -p 3000:3000 dashboard-creator
+docker run -p 3000:3000 sdmx-dashboard-demo
 ```
 

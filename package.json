@@ -1,5 +1,5 @@
 {
-  "name": "dashboard-creator",
+  "name": "sdmx-dashboard-demo",
   "version": "1.0.0",
   "author": "Thomas Tilak & Stan Ozier",
   "license": "CC-BY-4.0",
@@ -29,7 +29,7 @@
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "react-error-boundary": "^4.0.11",
-    "sdmx-dashboard-react": "^0.3.0",
+    "sdmx-dashboard-components": "^0.3.0",
     "typescript": "^5.3.3"
   }
 }
