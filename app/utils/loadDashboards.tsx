@@ -33,7 +33,7 @@ export const loadDashboards = async () => {
                             .replace('-', ' '),
                         date: stats.mtime,
                         uri: name.split('.')[0],
-                        raw: getServerHostName() + '/uploads/' + name
+                        raw: `${getServerHostName()}/api/config/${name.split('.')[0]}` // use the config API to access the file
                     };
                 });
             return jsonfiles
