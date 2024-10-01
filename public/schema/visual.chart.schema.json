@@ -151,6 +151,18 @@
             "description": "The link to the metadata",
             "type": "string"
         },
+        "colorPalette": {
+            "description": "The color palette to use for the chart",
+            "type": "object"
+        },
+        "sortByValue": {
+            "description": "Whether to sort the data by value",
+            "type": "string",
+            "enum": [
+                "asc",
+                "desc"
+            ]
+        },
         "data": {
             "description": "The data to display in the cell. Can be a single or multiple data sets.",
             "anyOf": [{

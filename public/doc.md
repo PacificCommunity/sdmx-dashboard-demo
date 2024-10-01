@@ -114,7 +114,8 @@ In the column section, the cells of our dashboard are defined with the following
 - `dataLink`: An URL of an application or file containing related data. It is actionable by clicking on the chart to open in a new browser tab. (**optional**). If not provided, no link will be displayed.
 - `metadataLink`: An URL of an application or file containing reference metadata. metadata. If present, a "Blue 'i'" icon is displayed besides the title, and by clicking on it the link opens in a new browser tab. (**optional**). If not provided, no link will be displayed.
 - `adaptiveTextSize`: indicates whether or not to adapt the text size to the cell size for `value` chart type. Default value is `false` (**optional**).
-- `colorPalette`: the color palette used in the charts. The dict should specify for each dimension the color associated to each dimension value (using the `id` as keys). The dimension is the concept that is defined as a `legend` concept. The colors are defined as hex values. (**optional**).
+- `sortByValue`: indicates whether or not to sort the data by value (`"asc"` or `"desc"`). (**optional**).
+- `colorPalette`: the color palette used in the charts. The dict should specify for each dimension the color associated to each dimension value (using the `id` as keys). The dimension is the concept that is defined as a `legend` concept. The colors are either defined as hex values or with an index (number) that will be used to get the color from the Highcharts theme defined via CSS for [styled mode](https://www.highcharts.com/docs/chart-design-and-style/custom-themes-in-styled-mode). (**optional**).
 ```json
 {
   "GEO_PICT": {
