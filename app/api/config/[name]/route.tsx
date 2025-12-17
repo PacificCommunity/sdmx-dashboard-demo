@@ -12,7 +12,8 @@ const configFolderPath = path.resolve("./public", "uploads");
  * @param name name of the file to load
  * @returns json 
  */
-export async function GET(request: NextRequest, { params }: { params: any }) {
+export async function GET(request: NextRequest, props: { params: Promise<any> }) {
+    const params = await props.params;
     if (process.env.GIST_TOKEN) {
         // Get Gist
         const data = await loadOneJsonFromGists(params.name)
@@ -32,7 +33,6 @@ export async function GET(request: NextRequest, { params }: { params: any }) {
             return NextResponse.json({ error: `Error loading file ${params.name}` }, { status: 500 })
         }
     }
-
 }
 
 
@@ -42,7 +42,8 @@ export async function GET(request: NextRequest, { params }: { params: any }) {
  * @param name name of the file to delete
  * @returns Next response
  */
-export async function DELETE(request: NextRequest, { params }: { params: any }) {
+export async function DELETE(request: NextRequest, props: { params: Promise<any> }) {
+    const params = await props.params;
     try {
         if (process.env.GIST_TOKEN) {
             // delete gist
