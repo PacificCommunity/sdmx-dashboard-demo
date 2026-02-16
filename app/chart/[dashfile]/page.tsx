@@ -4,7 +4,8 @@ import Offbar from "@/app/components/navigation/offbar"
 
 import DashboardWrapper from "@/app/components/dashboardWrapper"
 
-export default async function Page({ params }: { params: { dashfile: string } }) {
+export default async function Page(props: { params: Promise<{ dashfile: string }> }) {
+    const params = await props.params;
 
     const dashboards = await loadDashboards()
 
@@ -45,5 +46,4 @@ export default async function Page({ params }: { params: { dashfile: string } })
             </div >
         </>
     )
-
 }

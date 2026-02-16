@@ -11,18 +11,13 @@ import { SlashCircle, ClipboardData, PlusCircleDotted } from 'react-bootstrap-ic
 const Offbar = ({ dashboards }: any) => {
 
     const [show, setShow] = useState(false);
-    const [sideLoading, setSideLoading] = useState(true)
-    const [sideList, setSideList] = useState([])
+    const [sideLoading, setSideLoading] = useState(false)
+    const [sideList, setSideList] = useState(dashboards)
 
     const currentRoute = usePathname()
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
-    useEffect(() => {
-        setSideList(dashboards)
-        setSideLoading(false)
-    }, [dashboards])
 
     return (
         <>

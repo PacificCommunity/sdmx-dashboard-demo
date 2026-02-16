@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useDropzone } from 'react-dropzone'
 
 import styles from './styles.module.css'
+import Link from "next/link";
 
 type ErrorReports = {
   [filename: string]: string[];
@@ -114,10 +115,10 @@ const UploadDropzone = () => {
         null
       )}
       <div className="mt-3">
-        <a
+        <Link
           href="/"
           className={`btn ${acceptedFiles.length > 0 ? 'btn-primary' : 'btn-secondary'}`}
-        >Back to home page</a>
+        >Back to home page</Link>
       </div>
     </section >
   )

@@ -6,6 +6,9 @@ const nextConfig = {
             protocol: 'https',
             hostname: 'pacificdata.org',
         }]
+    },
+    experimental: {
+        turbopackUseSystemTlsCerts: true
     }
 }
 
