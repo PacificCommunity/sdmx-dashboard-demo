@@ -15,7 +15,7 @@ const schemaFolderPath = path.resolve("./public", "schema");
 /**
  * Load list of config files from uploads folder or Github Gist
  * @param NextRequest Get list of dashboard configurations
- * @returns json 
+ * @returns json
  */
 export async function GET(request: NextRequest) {
 
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
 /**
  * Save a new config file to uploads folder or Github Gist
  * @param NextRequest Post a new config file
- * @returns json 
+ * @returns json
  */
 export async function POST(request: NextRequest) {
 
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
         }, { status: 500 });
     }
 
-    // Save Dashboard config locally or as a Gist 
+    // Save Dashboard config locally or as a Gist
     try {
         if (process.env.GIST_TOKEN) {
             // Save config file in github gist
@@ -135,10 +135,10 @@ export async function POST(request: NextRequest) {
                 process.env.GIST_PUBLIC == 'true' || process.env.GIST_PUBLIC == '1'
             );
             // revalidate fetch call for gists
-            revalidateTag('dashboards');
+            revalidateTag('dashboards', "max");
         } else {
             // Fallback, save file in uploads folder
-            // DashID is any string composed of numbers, letters, and underscores (_) 
+            // DashID is any string composed of numbers, letters, and underscores (_)
             // Filename should not have spaces, but just in case, replace them with dashes
             const finalname = `${data.id.replace(' ', '-')}.json`;
             fs.writeFileSync(`${configFolderPath}/${finalname}`, buffer);

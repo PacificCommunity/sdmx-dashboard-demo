@@ -7,10 +7,10 @@ import { revalidatePath, revalidateTag } from "next/cache";
 const configFolderPath = path.resolve("./public", "uploads");
 
 /**
- * 
+ *
  * @param NextRequest Get the config file content as JSON specified in the URL
  * @param name name of the file to load
- * @returns json 
+ * @returns json
  */
 export async function GET(request: NextRequest, props: { params: Promise<any> }) {
     const params = await props.params;
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest, props: { params: Promise<any> })
 
 
 /**
- * 
+ *
  * @param NextRequest Delete the config file content specified in the URL
  * @param name name of the file to delete
  * @returns Next response
@@ -65,7 +65,7 @@ export async function DELETE(request: NextRequest, props: { params: Promise<any>
             });
 
             // Revalidate gist fetching cache
-            revalidateTag('dashboards');
+            revalidateTag('dashboards', "max");
 
         } else {
             // delete local file from uploads folder
